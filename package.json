@@ -1,0 +1,28 @@
+{
+  "name": "e-schools-api",
+  "version": "1.0.0",
+  "description": "API for the E-Schools App",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "nodemon src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gabriguexp/E-Schools-API.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Gabriguexp/E-Schools-API/issues"
+  },
+  "homepage": "https://github.com/Gabriguexp/E-Schools-API#readme",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "express": "^4.17.3",
+    "firebase": "^9.6.10",
+    "firebase-admin": "^10.0.2",
+    "nodemon": "^2.0.15"
+  }
+}
