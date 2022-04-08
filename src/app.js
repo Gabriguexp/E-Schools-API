@@ -23,11 +23,13 @@ const firebaseApp = initializeApp(firebaseConfig);
 //const db = getFirestore(firebaseApp);
 
 import userRoutes from './routes/user.routes.js';
+import authRoutes from './routes/auth.routes.js'
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-app.use('/', userRoutes);
+app.use('/user', userRoutes);
+app.use('/auth', authRoutes);
 
 export {
     app,

@@ -1,7 +1,7 @@
 import {Router} from 'express';
 
 const router = Router();
-/*
+
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, onValue } from "firebase/database";
 import { initializeAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
@@ -78,6 +78,8 @@ router.post('/register', async function(req, res){
               res.status(401).json({ message: "Registro incorrecto" });
             }
           );
+        } else {
+            res.status(401).json({ message: "Faltan datos en el registro" });
         }
 
     } catch (error) {
@@ -127,5 +129,4 @@ router.post('/registerProfesor', async function(req, res){
       res.status(400).json({ message: "An error occured" });
   }
 })
-*/
 export default router;
