@@ -4,7 +4,7 @@ const router = Router();
 
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, onValue } from "firebase/database";
-import { initializeAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { initializeAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, getAuth, onAuthStateChanged } from "firebase/auth";
 import { async } from '@firebase/util';
 const firebaseConfig = {
     apiKey: "AIzaSyC-rjHLjxQ_2lyFWMISeQq8ReJa9U_6dFY",
@@ -35,6 +35,20 @@ router.post('/login', async function(req, res){
         await signInWithEmailAndPassword(auth, email, password).then(
           async (result) => {
               console.log(result)
+              const auth = getAuth();
+              onAuthStateChanged(auth, (user) => {
+                if (user) {
+                  // User is signed in, see docs for a list of available properties
+                  // https://firebase.google.com/docs/reference/js/firebase.User
+                  const uid = user.uid;
+                  console.log('uid: '+ uid)
+                  // ...
+                } else {
+                  // User is signed out
+                  // ...
+                }
+              });
+
               res.status(200).json({ message: "Inicio de sesión correcto" });
           },
           function (error) {

@@ -24,12 +24,14 @@ const firebaseApp = initializeApp(firebaseConfig);
 
 import userRoutes from './routes/user.routes.js';
 import authRoutes from './routes/auth.routes.js'
+import cursoRoutes from './routes/curso.routes.js'
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 app.use('/user', userRoutes);
 app.use('/auth', authRoutes);
+app.use('/curso', cursoRoutes);
 
 export {
     app,
