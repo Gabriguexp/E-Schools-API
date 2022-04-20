@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser'
-var cors = require('cors')
+import cors from 'cors'
+
 
 const app = express();
 /*
