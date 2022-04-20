@@ -1,11 +1,9 @@
 import {Router} from 'express';
 
 const router = Router();
-/*
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, onValue } from "firebase/database";
-import { initializeAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { async } from '@firebase/util';
+import { getDatabase, ref, set, push, get, child, update, remove} from "firebase/database";
+
 const firebaseConfig = {
     apiKey: "AIzaSyC-rjHLjxQ_2lyFWMISeQq8ReJa9U_6dFY",
     authDomain: "e-schools-1a842.firebaseapp.com",
@@ -18,68 +16,133 @@ const firebaseConfig = {
   };
 
 const firebaseApp = initializeApp(firebaseConfig);
-const auth = initializeAuth(firebaseApp);
-const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-const database = getDatabase();
-
-
-//import * as userController from '../controller/user.controller';
-
-//router.get('/', userController.home)
-
-router.post('/login', async function(req, res){
-    try {
-        console.log(req.body)
-        let email = req.body.email;
-        let password = req.body.password;
-        await signInWithEmailAndPassword(auth, email, password).then(
-          async (result) => {
-              console.log(result)
-              res.status(200).json({ message: "Inicio de sesión correcto" });
-          },
-          function (error) {
-            console.log(error);
-            res.status(401).json({ message: "Datos de inicio de sesión incorrectos" });
-          }
-        );
-    } catch (error) {
-        console.log(error);
-        res.status(400).json({ message: "An error occured" });
-    }
-})
-
-
-
-router.post('/register', async function(req, res){
-    try {
-        let email = req.body.email;
-        let password = req.body.password;
+const db = getDatabase();
+router.post('/store', async function(req, res){
+    try{
+      /*
         let nombre = req.body.nombre;
-        let apellidos = req.body.apellidos;
-        let register = false
-        //Comprobar datos de register y si esta todo ok almacenarlo.
+        let descripcion = req.body.descripcion
+        let precio = req.body.precio
+        if (nombre == '' && descripcion == '' && precio == '') {
+            res.status(401).json({ message: "Algún campo está vacio" });
+        } else {
 
-        if (emailRegex.test(email) && password.length >=6 && nombre != '' && apellidos != ''){
-          await createUserWithEmailAndPassword(auth, email, password).then(
-            async (result) => {
-                let userId = result.user.uid
-                const db = getDatabase();
-                set(ref(db, 'users/' + userId), {
-                  nombre : nombre, 
-                  apellidos : apellidos,
-                  email: email,
-                  rol: 'estudiante',
-                });
-
-                res.status(200).json({ message: "Registro correcto" });
-            },
-            function (error) {
-              console.log(error);
-              res.status(401).json({ message: "Registro incorrecto" });
-            }
-          );
+            const cursos = ref(db, 'curso')
+            const newCurso = push(cursos)
+            set(newCurso, {
+                nombre : nombre, 
+                descripcion : descripcion,
+                precio: precio,
+            })
+            res.status(200).json({ message: "Curso añadido" });
         }
+        */
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
 
+})
+
+router.get('/index', async function(req, res){
+    try{
+        let cursos = {}
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'curso')).then((snapshot) => {
+            if (snapshot.exists()) {
+                //console.log(snapshot.val());
+                cursos = snapshot.val()
+                res.status(200).json({ message: "Devolviendo cursos", cursos: cursos });
+            } else {
+                console.log("No data available");
+                res.status(200).json({ message: "No hay cursos disponibles actualmente", });
+            }
+        })
+
+        
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+})
+
+router.get('/:cursoid', async function(req, res){
+    try{
+        let id = req.params.cursoid;
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'curso/'+ id)).then((snapshot) => {
+            if (snapshot.exists()) {
+                //console.log(snapshot.val());
+                let curso = snapshot.val()
+                res.status(200).json({ message: "Devolviendo curso", curso: curso });
+            } else {
+                console.log("No data available");
+                res.status(200).json({ message: "No se ha encontrado el curso", });
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+})
+
+router.put('/:cursoid', async function(req, res){
+    try{
+        let nombre = req.body.nombre;
+        let descripcion = req.body.descripcion
+        let precio = req.body.precio
+        let id = req.params.cursoid;
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'curso/'+ id)).then((snapshot) => {
+            if (snapshot.exists()) {
+                //console.log(snapshot.val());
+                
+                
+
+                const curso = ref(db, 'curso/'+id)
+                
+                update(curso, {
+                    nombre : nombre, 
+                    descripcion : descripcion,
+                    precio: precio,
+                })
+
+                res.status(200).json({ message: "curso actualizado", });
+            } else {
+                console.log("No data available");
+                res.status(401).json({ message: "No se ha encontrado el curso", });
+            }
+        })
+
+
+
+        
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+})
+
+router.delete('/:cursoid', async function(req, res){
+    try{
+        let id = req.params.cursoid;
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'curso/'+ id)).then((snapshot) => {
+            if (snapshot.exists()) {
+
+                const curso = ref(db, 'curso/'+id)
+                remove(curso)
+                res.status(200).json({ message: "Curso borrado.", });
+
+            } else {
+                console.log("No data available");
+                res.status(401).json({ message: "No se ha encontrado el curso", });
+            }
+        })
+
+
+
+        
     } catch (error) {
         console.log(error);
         res.status(400).json({ message: "An error occured" });
@@ -88,44 +151,4 @@ router.post('/register', async function(req, res){
 
 
 
-router.post('/registerProfesor', async function(req, res){
-  try {
-      let email = req.body.email;
-      let password = req.body.password;
-      let rePass = req.body.repassword
-      let nombre = req.body.nombre;
-      let apellidos = req.body.apellidos;
-      let register = false
-      //Comprobar datos de register y si esta todo ok almacenarlo.
-
-      if (password != repassword){
-        res.status(401).json({ message: "Las contraseñas no coinciden" });
-      }
-      if (emailRegex.test(email) && password.length >=6 && nombre != '' && apellidos != ''){
-        await createUserWithEmailAndPassword(auth, email, password).then(
-          async (result) => {
-              let userId = result.user.uid
-              const db = getDatabase();
-              set(ref(db, 'users/' + userId), {
-                nombre : nombre, 
-                apellidos : apellidos,
-                email: email,
-                rol: 'profesor',
-              });
-
-              res.status(200).json({ message: "Registro correcto" });
-          },
-          function (error) {
-            console.log(error);
-            res.status(401).json({ message: "Registro incorrecto" });
-          }
-        );
-      }
-
-  } catch (error) {
-      console.log(error);
-      res.status(400).json({ message: "An error occured" });
-  }
-})
-*/
 export default router;

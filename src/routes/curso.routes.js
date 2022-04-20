@@ -79,10 +79,6 @@ router.get('/:cursoid', async function(req, res){
                 res.status(200).json({ message: "No se ha encontrado el curso", });
             }
         })
-
-
-
-        
     } catch (error) {
         console.log(error);
         res.status(400).json({ message: "An error occured" });
