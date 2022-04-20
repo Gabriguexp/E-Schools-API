@@ -1,5 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser'
+var cors = require('cors')
 
 const app = express();
 /*
@@ -28,6 +29,7 @@ import cursoRoutes from './routes/curso.routes.js'
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+app.use(cors())
 
 app.use('/user', userRoutes);
 app.use('/auth', authRoutes);
