@@ -3,6 +3,7 @@ import {Router} from 'express';
 const router = Router();
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, push, get, child, update, remove} from "firebase/database";
+import { initializeAuth, createUserWithEmailAndPassword, } from "firebase/auth";
 
 const firebaseConfig = {
     apiKey: "AIzaSyC-rjHLjxQ_2lyFWMISeQq8ReJa9U_6dFY",
@@ -14,70 +15,65 @@ const firebaseConfig = {
     appId: "1:165316854923:web:50c9b39772ede4f9ab808e",
     measurementId: "G-BH14SXQLYM"
   };
-
+const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getDatabase();
+const auth = initializeAuth(firebaseApp);
 router.post('/store', async function(req, res){
-    try{
-      /*
+    try {
+        let email = req.body.email;
+        let password = req.body.password;
         let nombre = req.body.nombre;
-        let descripcion = req.body.descripcion
-        let precio = req.body.precio
-        if (nombre == '' && descripcion == '' && precio == '') {
-            res.status(401).json({ message: "Algún campo está vacio" });
-        } else {
+        let apellidos = req.body.apellidos;
+        let rol = req.body.rol
+        //Comprobar datos de register y si esta todo ok almacenarlo.
 
-            const cursos = ref(db, 'curso')
-            const newCurso = push(cursos)
-            set(newCurso, {
-                nombre : nombre, 
-                descripcion : descripcion,
-                precio: precio,
-            })
-            res.status(200).json({ message: "Curso añadido" });
+        if (emailRegex.test(email) && password.length >=6 && nombre != '' && apellidos != '' ){
+            if (rol == 'estudiante' || rol == 'profesor'){
+                await createUserWithEmailAndPassword(auth, email, password).then(
+                    async (result) => {
+                        let userId = result.user.uid
+                        const db = getDatabase();
+                        set(ref(db, 'users/' + userId), {
+                          nombre : nombre, 
+                          apellidos : apellidos,
+                          email: email,
+                          rol: rol,
+                        });
+        
+                        res.status(200).json({ message: "Usuario añadido" });
+                    },
+                    function (error) {
+                      console.log(error);
+                      res.status(401).json({ message: "Error al añadir el usuario" });
+                    }
+                );
+            } else {
+                res.status(401).json({ message: "El rol solo puede ser estudiante o profesor" });
+            }
+
+        } else {
+            res.status(401).json({ message: "Faltan datos del usuario" });
         }
-        */
+
     } catch (error) {
         console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
-
 })
 
 router.get('/index', async function(req, res){
     try{
-        let cursos = {}
+        let usuarios = {}
         const dbRef = ref(getDatabase());
-        get(child(dbRef, 'curso')).then((snapshot) => {
+        get(child(dbRef, 'users')).then((snapshot) => {
             if (snapshot.exists()) {
                 //console.log(snapshot.val());
-                cursos = snapshot.val()
-                res.status(200).json({ message: "Devolviendo cursos", cursos: cursos });
+                usuarios = snapshot.val()
+                res.status(200).json({ message: "Devolviendo usuarios", usuarios: usuarios });
             } else {
                 console.log("No data available");
-                res.status(200).json({ message: "No hay cursos disponibles actualmente", });
-            }
-        })
-
-        
-    } catch (error) {
-        console.log(error);
-        res.status(400).json({ message: "An error occured" });
-    }
-})
-
-router.get('/:cursoid', async function(req, res){
-    try{
-        let id = req.params.cursoid;
-        const dbRef = ref(getDatabase());
-        get(child(dbRef, 'curso/'+ id)).then((snapshot) => {
-            if (snapshot.exists()) {
-                //console.log(snapshot.val());
-                let curso = snapshot.val()
-                res.status(200).json({ message: "Devolviendo curso", curso: curso });
-            } else {
-                console.log("No data available");
-                res.status(200).json({ message: "No se ha encontrado el curso", });
+                res.status(200).json({ message: "No hay usuarios actualmente", });
             }
         })
     } catch (error) {
@@ -86,31 +82,122 @@ router.get('/:cursoid', async function(req, res){
     }
 })
 
-router.put('/:cursoid', async function(req, res){
+router.get('/estudiantes', async function(req, res){
     try{
+        let usuarios = {}
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'users')).then((snapshot) => {
+            if (snapshot.exists()) {
+                //console.log(snapshot.val());
+                usuarios = snapshot.val()
+                let estudiantes = []
+                for(var i in usuarios){                    
+                    if (usuarios[i].rol == 'estudiante'){
+                        estudiantes.push([i, usuarios[i]])
+                    }
+                }
+
+                for(let i = 0; i < usuarios.length; i++){
+                    console.log('-----')
+                    console.log(i)
+                    console.log('-----')
+                }
+                
+                res.status(200).json({ message: "Devolviendo usuarios", usuarios: estudiantes });
+            } else {
+                console.log("No data available");
+                res.status(200).json({ message: "No hay usuarios actualmente", });
+            }
+        })
+    }catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+})
+
+router.get('/profesores', async function(req, res){
+    try{
+        let usuarios = {}
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'users')).then((snapshot) => {
+            if (snapshot.exists()) {
+                //console.log(snapshot.val());
+                usuarios = snapshot.val()
+                let profesores = []
+                for(var i in usuarios){                    
+                    if (usuarios[i].rol == 'profesor'){
+                        profesores.push([i, usuarios[i]])
+                    }
+                }
+
+                for(let i = 0; i < usuarios.length; i++){
+                    console.log('-----')
+                    console.log(i)
+                    console.log('-----')
+                }
+                
+                res.status(200).json({ message: "Devolviendo usuarios", usuarios: profesores });
+            } else {
+                console.log("No data available");
+                res.status(200).json({ message: "No hay usuarios actualmente", });
+            }
+        })
+    }catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+})
+
+router.get('/:userid', async function(req, res){
+    try{
+        let id = req.params.userid;
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'users/'+ id)).then((snapshot) => {
+            if (snapshot.exists()) {
+                //console.log(snapshot.val());
+                let usuario = snapshot.val()
+                res.status(200).json({ message: "Devolviendo usuario", usuario: usuario });
+            } else {
+                console.log("No data available generico");
+                res.status(200).json({ message: "No se ha encontrado el usuario", });
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+})
+
+
+
+
+router.put('/:userid', async function(req, res){
+    try{
+        //let email = req.body.email;
+        /*let password = req.body.password;*/
         let nombre = req.body.nombre;
-        let descripcion = req.body.descripcion
-        let precio = req.body.precio
-        let id = req.params.cursoid;
+        let apellidos = req.body.apellidos;
+        let rol = req.body.rol
+        let id = req.params.userid;
         const dbRef = ref(getDatabase());
-        get(child(dbRef, 'curso/'+ id)).then((snapshot) => {
+        get(child(dbRef, 'users/'+ id)).then((snapshot) => {
             if (snapshot.exists()) {
                 //console.log(snapshot.val());
                 
                 
 
-                const curso = ref(db, 'curso/'+id)
+                const curso = ref(db, 'users/'+id)
                 
                 update(curso, {
                     nombre : nombre, 
-                    descripcion : descripcion,
-                    precio: precio,
+                    apellidos : apellidos,
+                    rol: rol,
                 })
 
-                res.status(200).json({ message: "curso actualizado", });
+                res.status(200).json({ message: "usuario actualizado", });
             } else {
                 console.log("No data available");
-                res.status(401).json({ message: "No se ha encontrado el curso", });
+                res.status(401).json({ message: "No se ha encontrado al usuario", });
             }
         })
 
@@ -123,6 +210,7 @@ router.put('/:cursoid', async function(req, res){
     }
 })
 
+/*
 router.delete('/:cursoid', async function(req, res){
     try{
         let id = req.params.cursoid;
@@ -149,6 +237,6 @@ router.delete('/:cursoid', async function(req, res){
     }
 })
 
-
+*/
 
 export default router;
