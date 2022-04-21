@@ -70,7 +70,6 @@ router.post('/register', async function(req, res){
         let password = req.body.password;
         let nombre = req.body.nombre;
         let apellidos = req.body.apellidos;
-        let register = false
         //Comprobar datos de register y si esta todo ok almacenarlo.
 
         if (emailRegex.test(email) && password.length >=6 && nombre != '' && apellidos != ''){
