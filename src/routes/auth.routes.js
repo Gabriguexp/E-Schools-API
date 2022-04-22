@@ -5,19 +5,8 @@ const router = Router();
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, onValue } from "firebase/database";
 import { initializeAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, getAuth, onAuthStateChanged } from "firebase/auth";
-import { async } from '@firebase/util';
-const firebaseConfig = {
-    apiKey: "AIzaSyC-rjHLjxQ_2lyFWMISeQq8ReJa9U_6dFY",
-    authDomain: "e-schools-1a842.firebaseapp.com",
-    databaseURL: "https://e-schools-1a842-default-rtdb.europe-west1.firebasedatabase.app/",
-    projectId: "e-schools-1a842",
-    storageBucket: "e-schools-1a842.appspot.com",
-    messagingSenderId: "165316854923",
-    appId: "1:165316854923:web:50c9b39772ede4f9ab808e",
-    measurementId: "G-BH14SXQLYM"
-  };
+import firebaseApp from '../database.js';
 
-const firebaseApp = initializeApp(firebaseConfig);
 const auth = initializeAuth(firebaseApp);
 const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 const database = getDatabase();
@@ -81,7 +70,7 @@ router.post('/register', async function(req, res){
                   nombre : nombre, 
                   apellidos : apellidos,
                   email: email,
-                  rol: 'estudiante',
+                  rol: 'alumno',
                 });
 
                 res.status(200).json({ message: "Registro correcto" });

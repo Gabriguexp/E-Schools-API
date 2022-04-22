@@ -1,22 +1,12 @@
 import {Router} from 'express';
 
 const router = Router();
-import { initializeApp } from "firebase/app";
+
 import { getDatabase, ref, set, push, get, child, update, remove} from "firebase/database";
 import { initializeAuth, createUserWithEmailAndPassword, } from "firebase/auth";
+import firebaseApp from '../database.js'
 
-const firebaseConfig = {
-    apiKey: "AIzaSyC-rjHLjxQ_2lyFWMISeQq8ReJa9U_6dFY",
-    authDomain: "e-schools-1a842.firebaseapp.com",
-    databaseURL: "https://e-schools-1a842-default-rtdb.europe-west1.firebasedatabase.app/",
-    projectId: "e-schools-1a842",
-    storageBucket: "e-schools-1a842.appspot.com",
-    messagingSenderId: "165316854923",
-    appId: "1:165316854923:web:50c9b39772ede4f9ab808e",
-    measurementId: "G-BH14SXQLYM"
-  };
 const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-const firebaseApp = initializeApp(firebaseConfig);
 const db = getDatabase();
 const auth = initializeAuth(firebaseApp);
 router.post('/store', async function(req, res){
@@ -29,7 +19,7 @@ router.post('/store', async function(req, res){
         //Comprobar datos de register y si esta todo ok almacenarlo.
 
         if (emailRegex.test(email) && password.length >=6 && nombre != '' && apellidos != '' ){
-            if (rol == 'estudiante' || rol == 'profesor'){
+            if (rol == 'alumno' || rol == 'profesor'){
                 await createUserWithEmailAndPassword(auth, email, password).then(
                     async (result) => {
                         let userId = result.user.uid
@@ -49,7 +39,7 @@ router.post('/store', async function(req, res){
                     }
                 );
             } else {
-                res.status(401).json({ message: "El rol solo puede ser estudiante o profesor" });
+                res.status(401).json({ message: "El rol solo puede ser alumno o profesor" });
             }
 
         } else {
@@ -82,7 +72,7 @@ router.get('/index', async function(req, res){
     }
 })
 
-router.get('/estudiantes', async function(req, res){
+router.get('/alumnos', async function(req, res){
     try{
         let usuarios = {}
         const dbRef = ref(getDatabase());
@@ -92,7 +82,7 @@ router.get('/estudiantes', async function(req, res){
                 usuarios = snapshot.val()
                 let estudiantes = []
                 for(var i in usuarios){                    
-                    if (usuarios[i].rol == 'estudiante'){
+                    if (usuarios[i].rol == 'alumno'){
                         estudiantes.push([i, usuarios[i]])
                     }
                 }
@@ -182,28 +172,18 @@ router.put('/:userid', async function(req, res){
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'users/'+ id)).then((snapshot) => {
             if (snapshot.exists()) {
-                //console.log(snapshot.val());
-                
-                
-
                 const curso = ref(db, 'users/'+id)
-                
                 update(curso, {
                     nombre : nombre, 
                     apellidos : apellidos,
                     rol: rol,
                 })
-
                 res.status(200).json({ message: "usuario actualizado", });
             } else {
                 console.log("No data available");
                 res.status(401).json({ message: "No se ha encontrado al usuario", });
             }
         })
-
-
-
-        
     } catch (error) {
         console.log(error);
         res.status(400).json({ message: "An error occured" });
