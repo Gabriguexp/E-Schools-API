@@ -14,7 +14,9 @@ router.get('/:userid', UserController.getUserById)
 
 router.put('/:userid', UserController.updateUser)
 
+router.post('/disableUser', UserController.disableUser)
 
+router.post('/enableUser', UserController.enableUser)
 
 /*
 router.delete('/:cursoid', UserController.deleteUser)

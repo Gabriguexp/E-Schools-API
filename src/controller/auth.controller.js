@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, onValue } from "firebase/database";
-import { initializeAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, getAuth, onAuthStateChanged } from "firebase/auth";
+import { getDatabase, ref, set, onValue, get, child } from "firebase/database";
+import { initializeAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import firebaseApp from '../database.js';
 
 const auth = initializeAuth(firebaseApp);
@@ -15,21 +15,38 @@ export const login = async function(req, res){
         await signInWithEmailAndPassword(auth, email, password).then(
           async (result) => {
               console.log(result)
+              console.log(result.user.email)
               const auth = getAuth();
-              onAuthStateChanged(auth, (user) => {
+
+              getUserByEmail(email, res)
+              return
+              //res.status(200).json({ message: "Inicio de sesión correcto" });
+              /*let usuario = await getUserByEmail(result.user.email).then(function(){
+                console.log('usuario....')
+                console.log(usuario)
+                console.log('asdf')
+                console.log(usuario[1].activo)
+                res.status(200).json({ message: "Inicio de sesión correcto" });
+              }).catch(function(){
+
+              })*/
+              
+              /*onAuthStateChanged(auth, (user) => {
                 if (user) {
                   // User is signed in, see docs for a list of available properties
                   // https://firebase.google.com/docs/reference/js/firebase.User
                   const uid = user.uid;
+                  
+
                   console.log('uid: '+ uid)
                   // ...
                 } else {
                   // User is signed out
                   // ...
                 }
-              });
+              });*/
 
-              res.status(200).json({ message: "Inicio de sesión correcto" });
+              //res.status(200).json({ message: "Inicio de sesión correcto" });
           },
           function (error) {
             console.log(error);
@@ -60,6 +77,7 @@ export const register =  async function(req, res){
                   apellidos : apellidos,
                   email: email,
                   rol: 'alumno',
+                  activo: true,
                 });
 
                 res.status(200).json({ message: "Registro correcto" });
@@ -103,6 +121,7 @@ export const registerProfesor = async function(req, res){
                   apellidos : apellidos,
                   email: email,
                   rol: 'profesor',
+                  activo: true,
                 });
   
                 res.status(200).json({ message: "Registro correcto" });
@@ -118,4 +137,50 @@ export const registerProfesor = async function(req, res){
         console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
+}
+
+
+
+function getUserByEmail(email, res){
+  console.log('getuserbyid')
+  try{
+    let usuarios = {}
+    const dbRef = ref(getDatabase());
+    get(child(dbRef, 'users')).then((snapshot) => {
+        if (snapshot.exists()) {
+            //console.log(snapshot.val());
+            usuarios = snapshot.val()
+            for(var i in usuarios){                    
+                if (usuarios[i].email == email){
+                  console.log('lo encontre')
+                  console.log(i, usuarios[i])
+                  console.log('activo: ' + usuarios[i].activo)
+                  if (usuarios[i].activo || usuarios[i].activo == undefined){
+                    res.status(200).json({ message: "Login correcto",  });
+                  }else {
+                    const auth = getAuth();
+                    signOut(auth).then(() => {
+                      console.log('cerrando sesion al usuario por espabilao')
+                      // Sign-out successful.
+                    }).catch((error) => {
+                      // An error happened.
+                    });
+                    res.status(400).json({ message: "Usuario dado de baja",  });
+                  }
+                  //return[i, usuarios[i]]
+
+                  
+                  return
+                }
+            }
+            res.status(400).json({ message: "No se ha encontrado al usuario", });
+        } else {
+            //return "No data available";
+            res.status(200).json({ message: "No hay usuarios actualmente", });
+        }
+    })
+  }catch (error) {
+      console.log(error);
+      return error
+  }
 }
