@@ -26,6 +26,7 @@ export const storeUser = async(req, res) => {
                           apellidos : apellidos,
                           email: email,
                           rol: rol,
+                          activo: true
                         });
         
                         res.status(200).json({ message: "Usuario añadido" });
@@ -166,11 +167,12 @@ export const updateUser =  async function(req, res){
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'users/'+ id)).then((snapshot) => {
             if (snapshot.exists()) {
-                const curso = ref(db, 'users/'+id)
-                update(curso, {
+                const user = ref(db, 'users/'+id)
+                update(user, {
                     nombre : nombre, 
                     apellidos : apellidos,
                     rol: rol,
+                    activo: activo
                 })
                 res.status(200).json({ message: "usuario actualizado", });
             } else {
@@ -184,6 +186,50 @@ export const updateUser =  async function(req, res){
     }
 }
 
+
+export const disableUser =  async function(req, res){
+    try{
+        let id = req.body.userid;
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'users/'+ id)).then((snapshot) => {
+            if (snapshot.exists()) {
+                const user = ref(db, 'users/'+id)
+                update(user, {
+                    activo: false
+                })
+                res.status(200).json({ message: "usuario dado de baja", });
+            } else {
+                console.log("No data available");
+                res.status(401).json({ message: "No se ha encontrado al usuario", });
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+}
+
+export const enableUser =  async function(req, res){
+    try{
+        let id = req.body.userid;
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'users/'+ id)).then((snapshot) => {
+            if (snapshot.exists()) {
+                const user = ref(db, 'users/'+id)
+                update(user, {
+                    activo: true
+                })
+                res.status(200).json({ message: "usuario dado de alta", });
+            } else {
+                console.log("No data available");
+                res.status(401).json({ message: "No se ha encontrado al usuario", });
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+}
 
 /*
 
