@@ -1,5 +1,5 @@
 import { getDatabase, ref, set, push, get, child, update, remove} from "firebase/database";
-import { initializeAuth, createUserWithEmailAndPassword, } from "firebase/auth";
+import { initializeAuth, createUserWithEmailAndPassword, getAuth, sendPasswordResetEmail } from "firebase/auth";
 import firebaseApp from '../database.js'
 
 const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
@@ -146,7 +146,7 @@ export const getUserById = async function(req, res){
                 let usuario = snapshot.val()
                 res.status(200).json({ message: "Devolviendo usuario", usuario: usuario });
             } else {
-                console.log("No data available generico");
+                console.log("No data available");
                 res.status(200).json({ message: "No se ha encontrado el usuario", });
             }
         })
@@ -229,6 +229,32 @@ export const enableUser =  async function(req, res){
         res.status(400).json({ message: "An error occured" });
     }
 }
+
+export const resetPassword = async function(req, res){
+    try{
+        console.log('reset password')
+        let email = req.body.email
+        
+        
+        sendPasswordResetEmail(auth, email)
+        .then(() => {
+          console.log('Password reset email sent!')
+          res.status(200).json({ message: 'Email de reseteo de contraseña enviado.' });
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log('errorCode: ' + errorCode)
+          console.log('errorMsg: ' + errorMessage)
+          res.status(400).json({ message: errorMessage });
+
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+}
+
 
 /*
 
