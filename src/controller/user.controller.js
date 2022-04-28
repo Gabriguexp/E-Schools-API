@@ -172,7 +172,6 @@ export const updateUser =  async function(req, res){
                     nombre : nombre, 
                     apellidos : apellidos,
                     rol: rol,
-                    activo: activo
                 })
                 res.status(200).json({ message: "usuario actualizado", });
             } else {
