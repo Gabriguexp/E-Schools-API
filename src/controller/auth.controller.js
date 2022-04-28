@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, onValue, get, child } from "firebase/database";
-import { initializeAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { getDatabase, ref, set, onValue, get, child, } from "firebase/database";
+import { initializeAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, getAuth, onAuthStateChanged, signOut,  } from "firebase/auth";
 import firebaseApp from '../database.js';
 
 const auth = initializeAuth(firebaseApp);
@@ -157,6 +157,33 @@ function getUserByEmail(email, res){
                   console.log('activo: ' + usuarios[i].activo)
                   if (usuarios[i].activo || usuarios[i].activo == undefined){
                     res.status(200).json({ message: "Login correcto",  });
+                    const auth = getAuth();
+                    console.log('getauth')
+                    console.log(auth)
+                    console.log('currentuser')
+                    
+                    auth.currentUser.getIdToken().then(function(idToken){
+                      console.log('idToken')
+                      console.log(idToken)
+                      
+                      /*auth
+                      .verifyIdToken(idToken, false)
+                      .then((decodedToken) => {
+                        const uid = decodedToken.uid;
+                        // ...
+                        console.log('a')
+                      })
+                      .catch((error) => {
+                        console.log('b')
+                        // Handle error
+                      });
+                      */
+                      
+                      
+
+
+
+                    })
                   }else {
                     const auth = getAuth();
                     signOut(auth).then(() => {
