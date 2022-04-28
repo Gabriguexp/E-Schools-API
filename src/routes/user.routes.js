@@ -18,6 +18,8 @@ router.post('/disableUser', UserController.disableUser)
 
 router.post('/enableUser', UserController.enableUser)
 
+router.post('/resetPassword', UserController.resetPassword)
+
 /*
 router.delete('/:cursoid', UserController.deleteUser)
 
