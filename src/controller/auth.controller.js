@@ -221,11 +221,13 @@ export const checkUserLogged = async (req, res) => {
 export const logout = async(req, res )  => {
   try {
     signOut(auth).then(() => {
-      console.log('cerrando sesion al usuario por espabilao')
+      console.log('cerrando sesion al usuario')
       // Sign-out successful.
+      return res.status(200).json({message: 'Logout'});
     }).catch((error) => {
       console.log('error cerrando sesion')
       console.log(error)
+      return res.status(401).json({message: 'Error al cerrar sesión'});
       // An error happened.
     });
   } catch (error) {
