@@ -188,3 +188,47 @@ function checkUser(email, res){
       return error
   }
 }
+
+import adminAuth from "../admin.authdb.js";
+
+
+export const checkUserLogged = async (req, res) => {
+  try {
+
+    let idToken = req.body.sessiontoken
+    console.log('getauth')
+    console.log(auth)
+    
+    adminAuth.verifyIdToken(idToken, false)
+    .then((decodedToken) => {
+    const uid = decodedToken.uid;
+    
+    console.log('a')
+    return res.status(200).json({message: 'Authentication ok'});
+    
+    })
+    .catch((error) => {
+    
+        // Handle error
+        console.log('b')
+        return res.status(403).json({message: 'Authentiation failed'});
+    });
+  } catch (error) {
+      return res.status(401).json({message: 'Authentication failed'});
+  }
+}
+
+export const logout = async(req, res )  => {
+  try {
+    signOut(auth).then(() => {
+      console.log('cerrando sesion al usuario por espabilao')
+      // Sign-out successful.
+    }).catch((error) => {
+      console.log('error cerrando sesion')
+      console.log(error)
+      // An error happened.
+    });
+  } catch (error) {
+    return res.status(401).json({message: 'Authentication failed'});
+  }
+}
