@@ -66,3 +66,5 @@ dist
 
 # Needed For HTTPS config
 # src/index.js
+
+src/e-schoolsadmin.js
