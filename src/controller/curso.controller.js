@@ -82,9 +82,6 @@ export const updateCurso = async function(req, res){
         get(child(dbRef, 'curso/'+ id)).then((snapshot) => {
             if (snapshot.exists()) {
                 //console.log(snapshot.val());
-                
-                
-
                 const curso = ref(db, 'curso/'+id)
                 
                 update(curso, {
