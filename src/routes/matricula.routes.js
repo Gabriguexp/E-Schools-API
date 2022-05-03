@@ -1,9 +1,6 @@
 import {Router} from 'express';
-
 const router = Router();
-
 import * as matriculaController from '../controller/matricula.controller.js'
-
 
 router.post('/store', matriculaController.storeMatricula)
 
@@ -13,6 +10,8 @@ router.get('/:matriculaid', matriculaController.getMatriculaById)
 
 router.put('/:matriculaid', matriculaController.updateMatricula)
 
+/*
 router.delete('/:matriculaid', matriculaController.deleteMatricula)
+*/
 
 export default router;
