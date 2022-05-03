@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, push, get, child, update, remove} from "firebase/database";
 import firebaseApp from '../database.js';
+
 const db = getDatabase();
 
 export const storeMatricula = async function(req, res){
@@ -35,16 +36,16 @@ export const storeMatricula = async function(req, res){
 
 export const indexMatricula = async function(req, res){
     try{
-        let cursos = {}
+        let matricula = {}
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'matricula')).then((snapshot) => {
             if (snapshot.exists()) {
-                //console.log(snapshot.val());
-                cursos = snapshot.val()
-                res.status(200).json({ message: "Devolviendo cursos", cursos: cursos });
+                console.log(snapshot.val());
+                matricula = snapshot.val()
+                res.status(200).json({ message: "Devolviendo matricula", matricula: matricula });
             } else {
                 console.log("No data available");
-                res.status(200).json({ message: "No hay cursos disponibles actualmente", });
+                res.status(200).json({ message: "No hay matricula disponibles actualmente", });
             }
         })
     } catch (error) {
