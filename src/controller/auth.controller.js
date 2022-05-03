@@ -6,7 +6,6 @@ import firebaseApp from '../database.js';
 const auth = initializeAuth(firebaseApp);
 const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 const database = getDatabase();
-
 export const login = async function(req, res){
     try {
         console.log(req.body)
@@ -16,9 +15,9 @@ export const login = async function(req, res){
           async (result) => {
               console.log(result)
               console.log(result.user.email)
-              const auth = getAuth();
+              //const auth = getAuth();
 
-              getUserByEmail(email, res)
+              checkUser(email, res)
               return
               //res.status(200).json({ message: "Inicio de sesión correcto" });
               /*let usuario = await getUserByEmail(result.user.email).then(function(){
@@ -139,9 +138,7 @@ export const registerProfesor = async function(req, res){
     }
 }
 
-
-
-function getUserByEmail(email, res){
+function checkUser(email, res){
   console.log('getuserbyid')
   try{
     let usuarios = {}
@@ -156,36 +153,16 @@ function getUserByEmail(email, res){
                   console.log(i, usuarios[i])
                   console.log('activo: ' + usuarios[i].activo)
                   if (usuarios[i].activo || usuarios[i].activo == undefined){
-                    res.status(200).json({ message: "Login correcto",  });
-                    const auth = getAuth();
-                    console.log('getauth')
-                    console.log(auth)
-                    console.log('currentuser')
-                    
-                    auth.currentUser.getIdToken().then(function(idToken){
-                      console.log('idToken')
-                      console.log(idToken)
-                      
-                      /*auth
-                      .verifyIdToken(idToken, false)
-                      .then((decodedToken) => {
-                        const uid = decodedToken.uid;
-                        // ...
-                        console.log('a')
-                      })
-                      .catch((error) => {
-                        console.log('b')
-                        // Handle error
-                      });
-                      */
-                      
-                      
+                    //const auth = getAuth();
+                    console.log('auth.currentuser')
+                    //EL TOKEN!
+                    //auth.currentUser.stsTokenManager.accessToken
+                    let token = auth.currentUser.stsTokenManager.accessToken
+                    console.log(token)
+                    res.status(200).json({ message: "Login correcto", token: token  });
 
-
-
-                    })
                   }else {
-                    const auth = getAuth();
+                    
                     signOut(auth).then(() => {
                       console.log('cerrando sesion al usuario por espabilao')
                       // Sign-out successful.
@@ -209,5 +186,51 @@ function getUserByEmail(email, res){
   }catch (error) {
       console.log(error);
       return error
+  }
+}
+
+import adminAuth from "../admin.authdb.js";
+
+
+export const checkUserLogged = async (req, res) => {
+  try {
+
+    let idToken = req.body.sessiontoken
+    console.log('getauth')
+    console.log(auth)
+    
+    adminAuth.verifyIdToken(idToken, false)
+    .then((decodedToken) => {
+    const uid = decodedToken.uid;
+    
+    console.log('a')
+    return res.status(200).json({message: 'Authentication ok'});
+    
+    })
+    .catch((error) => {
+    
+        // Handle error
+        console.log('b')
+        return res.status(403).json({message: 'Authentiation failed'});
+    });
+  } catch (error) {
+      return res.status(401).json({message: 'Authentication failed'});
+  }
+}
+
+export const logout = async(req, res )  => {
+  try {
+    signOut(auth).then(() => {
+      console.log('cerrando sesion al usuario')
+      // Sign-out successful.
+      return res.status(200).json({message: 'Logout'});
+    }).catch((error) => {
+      console.log('error cerrando sesion')
+      console.log(error)
+      return res.status(401).json({message: 'Error al cerrar sesión'});
+      // An error happened.
+    });
+  } catch (error) {
+    return res.status(401).json({message: 'Authentication failed'});
   }
 }
