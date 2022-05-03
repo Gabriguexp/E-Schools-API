@@ -9,5 +9,8 @@ router.post('/register', authController.register)
 
 router.post('/registerProfesor', authController.registerProfesor)
 
+router.post('/checksessiontoken', authController.checkUserLogged)
+
+router.post('/logout', authController.logout)
 
 export default router;
