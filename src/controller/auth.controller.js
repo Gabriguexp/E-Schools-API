@@ -201,10 +201,23 @@ export const checkUserLogged = async (req, res) => {
     
     adminAuth.verifyIdToken(idToken, false)
     .then((decodedToken) => {
-    const uid = decodedToken.uid;
-    
-    console.log('a')
-    return res.status(200).json({message: 'Authentication ok'});
+      const id = decodedToken.uid;
+      const dbRef = ref(getDatabase());
+      let usuario 
+      get(child(dbRef, 'users/'+ id)).then((snapshot) => {
+          if (snapshot.exists()) {
+            console.log('asdada ')
+            console.log(snapshot.val());
+            usuario = snapshot.val()
+            return res.status(200).json({message: 'Authentication ok', user: usuario});
+          } else {
+            console.log("No data available");
+            return res.status(200).json({message: 'Authentication ok', user: ''});
+            
+          }
+      })
+      console.log('a')
+      
     
     })
     .catch((error) => {

@@ -260,8 +260,6 @@ export const addCursoToProfesor = async function(req, res){
         console.log('reset password')
         let profesorId = req.body.profesorId
         let cursoId = req.body.cursoId
-        
-        
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'users/'+ profesorId)).then((snapshot) => {
             if (snapshot.exists()) {
