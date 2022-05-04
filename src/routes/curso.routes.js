@@ -10,6 +10,8 @@ router.get('/:cursoid', cursoController.getCursoById)
 
 router.put('/:cursoid', cursoController.updateCurso)
 
+
+
 /*
 router.delete('/:cursoid', cursoController.deleteCurso)
 */

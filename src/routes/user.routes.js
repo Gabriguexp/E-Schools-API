@@ -26,6 +26,7 @@ router.post('/enableUser', UserController.enableUser)
 
 router.post('/resetPassword', UserController.resetPassword)
 
+router.post('/addcursotoprofesor', UserController.addCursoToProfesor)
 
 
 

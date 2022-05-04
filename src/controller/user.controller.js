@@ -255,9 +255,31 @@ export const resetPassword = async function(req, res){
     }
 }
 
-
+export const addCursoToProfesor = async function(req, res){
+    try{
+        console.log('reset password')
+        let profesorId = req.body.profesorId
+        let cursoId = req.body.cursoId
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'users/'+ profesorId)).then((snapshot) => {
+            if (snapshot.exists()) {
+                const cursos = ref(db, 'users/'+profesorId+'/cursos')
+                const newProfesorCurso = push(cursos)
+                set(newProfesorCurso, {
+                    curso : cursoId, 
+                })
+                res.status(200).json({ message: "Curso añadido al profesor", });
+            } else {
+                console.log("No data available");
+                res.status(401).json({ message: "No se ha encontrado al usuario", });
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+}
 /*
-
 export const deleteUser =  async function(req, res){
     try{
         let id = req.params.cursoid;
