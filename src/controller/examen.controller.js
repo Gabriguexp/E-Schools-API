@@ -8,19 +8,17 @@ export const storeExamen = async function(req, res){
     try{
         let titulo = req.body.titulo;
         let preguntas = req.body.preguntas;
-        let data = req.body.data;
         let visible = req.body.visible;
         let curso = req.body.curso;
         
-        if (titulo == '' && preguntas == '' && data == '' && visible == '' && curso == '') {
+        if (titulo == '' && preguntas == '' && visible == '' && curso == '') {
             res.status(401).json({ message: "Algún campo está vacio" });
         } else {
             const examenes = ref(db, 'curso/'+ curso +'/examen')
             const newExamen = push(examenes)
             set(newExamen, {
-                nombre : nombre, 
+                titulo : titulo, 
                 preguntas : preguntas,
-                data: data,
                 visible: visible,
             })
             res.status(200).json({ message: "Examen añadido" });
@@ -35,14 +33,14 @@ export const storeExamen = async function(req, res){
 
 export const indexExamen = async function(req, res){
     try{
-        let id = req.body.idcurso
-        let examenes = {}
+        let id = req.body.idcurso;
+        let examen = {};
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'curso/'+ id +'/examen')).then((snapshot) => {
             if (snapshot.exists()) {
                 //console.log(snapshot.val());
                 examen = snapshot.val()
-                res.status(200).json({ message: "Devolviendo examenes", examenes: examen });
+                res.status(200).json({ message: "Devolviendo examenes", examen: examen });
             } else {
                 console.log("No data available");
                 res.status(200).json({ message: "No hay examenes disponibles actualmente para este curso", });
@@ -56,16 +54,17 @@ export const indexExamen = async function(req, res){
 
 export const getExamenById = async function(req, res){
     try{
-        let id = req.params.cursoid;
+        let id = req.params.examenid;
+        let idcurso = req.params.cursoid;
         const dbRef = ref(getDatabase());
-        get(child(dbRef, 'curso/'+ id)).then((snapshot) => {
+        get(child(dbRef, 'curso/'+ idcurso +'/examen/'+ id)).then((snapshot) => {
             if (snapshot.exists()) {
                 //console.log(snapshot.val());
-                let curso = snapshot.val()
-                res.status(200).json({ message: "Devolviendo curso", curso: curso });
+                let examen = snapshot.val()
+                res.status(200).json({ message: "Devolviendo examen", examen: examen });
             } else {
                 console.log("No data available");
-                res.status(200).json({ message: "No se ha encontrado el curso", });
+                res.status(200).json({ message: "No se ha encontrado el examen", idcurso: idcurso});
             }
         })
     } catch (error) {
@@ -76,26 +75,28 @@ export const getExamenById = async function(req, res){
 
 export const updateExamen = async function(req, res){
     try{
-        let nombre = req.body.nombre;
-        let descripcion = req.body.descripcion
-        let precio = req.body.precio
-        let id = req.params.cursoid;
+        let id = req.params.examenid;
+        let idcurso = req.params.cursoid;
+        
+        let titulo = req.body.titulo;
+        let preguntas = req.body.preguntas;
+        let visible = req.body.visible;
         const dbRef = ref(getDatabase());
-        get(child(dbRef, 'curso/'+ id)).then((snapshot) => {
+        get(child(dbRef, 'curso/'+ idcurso +'/examen/'+ id)).then((snapshot) => {
             if (snapshot.exists()) {
                 //console.log(snapshot.val());
-                const curso = ref(db, 'curso/'+id)
+                const curso = ref(db, 'curso/'+ idcurso +'/examen/'+ id)
                 
                 update(curso, {
-                    nombre : nombre, 
-                    descripcion : descripcion,
-                    precio: precio,
+                    titulo : titulo, 
+                    preguntas : preguntas,
+                    visible: visible,
                 })
 
-                res.status(200).json({ message: "curso actualizado", });
+                res.status(200).json({ message: "examen actualizado", });
             } else {
                 console.log("No data available");
-                res.status(401).json({ message: "No se ha encontrado el curso", });
+                res.status(401).json({ message: "No se ha encontrado el examen", });
             }
         })
 
