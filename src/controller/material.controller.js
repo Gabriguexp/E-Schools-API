@@ -142,6 +142,8 @@ export const test = async function(req, res){
         console.log(req.body)
         console.log('curso')
         console.log(req.body.curso)
+        console.log('file')
+        console.log(req.files.file)
         //console.log(req)
         let file = req.files.file;
         let curso = req.body.curso
