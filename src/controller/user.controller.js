@@ -239,7 +239,7 @@ export const resetPassword = async function(req, res){
         sendPasswordResetEmail(auth, email)
         .then(() => {
           console.log('Password reset email sent!')
-          res.status(200).json({ message: 'Email de reseteo de contraseña enviado.' });
+          res.status(200).json({ message: 'Se ha enviado un correo electrónico con toda la información' });
         })
         .catch((error) => {
           const errorCode = error.code;
