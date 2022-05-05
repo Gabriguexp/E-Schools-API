@@ -266,7 +266,7 @@ export const addCursoToProfesor = async function(req, res){
                 const cursos = ref(db, 'users/'+profesorId+'/cursos')
                 const newProfesorCurso = push(cursos)
                 set(newProfesorCurso, {
-                    curso : cursoId, 
+                    curso : cursoId,
                 })
                 res.status(200).json({ message: "Curso añadido al profesor", });
             } else {
