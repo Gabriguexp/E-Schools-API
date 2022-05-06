@@ -8,14 +8,14 @@ router.post('/test', materialController.test)
 
 //router.get('/index', materialController.indexMaterial)
 
-//router.get('/:cursoid', materialController.getMaterialById)
+router.get('/:cursoid/:materialid', materialController.getMaterialById)
 
 //router.put('/:cursoid', materialController.updateMaterial)
 
 
 
-/*
-router.delete('/:cursoid', cursoController.deleteCurso)
-*/
+
+router.post('/', materialController.deleteMaterial)
+
 
 export default router;

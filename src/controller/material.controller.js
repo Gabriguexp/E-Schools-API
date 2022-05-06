@@ -82,16 +82,17 @@ export const indexMaterial = async function(req, res){
 
 export const getMaterialById = async function(req, res){
     try{
-        let id = req.params.cursoid;
+        let cursoid = req.params.cursoid;
+        let materialid = req.params.materialid;
         const dbRef = ref(getDatabase());
-        get(child(dbRef, 'curso/'+ id)).then((snapshot) => {
+        get(child(dbRef, 'curso/'+ cursoid+'/material/'+ materialid)).then((snapshot) => {
             if (snapshot.exists()) {
                 //console.log(snapshot.val());
                 let curso = snapshot.val()
-                res.status(200).json({ message: "Devolviendo curso", curso: curso });
+                res.status(200).json({ message: "Devolviendo material", curso: curso });
             } else {
                 console.log("No data available");
-                res.status(200).json({ message: "No se ha encontrado el curso", });
+                res.status(200).json({ message: "No se ha encontrado el material", });
             }
         })
     } catch (error) {
@@ -136,18 +137,20 @@ export const updateMaterial = async function(req, res){
 
 export const deleteMaterial = async function(req, res){
     try{
-        let id = req.params.cursoid;
+        let cursoid = req.body.cursoid;
+        let materialid = req.body.materialid;
+        console.log('cursoid'+ cursoid)
         const dbRef = ref(getDatabase());
-        get(child(dbRef, 'curso/'+ id)).then((snapshot) => {
+        get(child(dbRef, 'curso/'+ cursoid+'/material/'+ materialid)).then((snapshot) => {
             if (snapshot.exists()) {
 
-                const curso = ref(db, 'curso/'+id)
-                remove(curso)
-                res.status(200).json({ message: "Curso borrado.", });
+                const material = ref(db, 'curso/'+ cursoid+'/material/'+ materialid)
+                remove(material)
+                res.status(200).json({ message: "Material borrado.", });
 
             } else {
                 console.log("No data available");
-                res.status(401).json({ message: "No se ha encontrado el curso", });
+                res.status(401).json({ message: "No se ha encontrado el material", });
             }
         })
     } catch (error) {
