@@ -9,22 +9,47 @@ export const storeMaterial = async function(req, res){
     try{
         let nombre = req.body.nombre;
         let tipo = req.body.tipo;
-        let data = req.body.data;
         let visible = req.body.visible;
         let curso = req.body.curso;
-
-        if (nombre == '' && descripcion == '' && data == '' && visible == '' && curso == '') {
+        if (nombre == '' && descripcion == '' && visible == '' && curso == '') {
             res.status(401).json({ message: "Algún campo está vacio" });
-        } else {
+        } else {            
             const materiales = ref(db, 'curso/'+ curso +'/material')
             const newMaterial = push(materiales)
-            set(newMaterial, {
-                nombre : nombre, 
-                tipo : tipo,
-                data: data,
-                visible: visible,
-            })
-            res.status(200).json({ message: "Material añadido" });
+            let data = req.body.data;
+
+            if(tipo == 'Enlace'){
+                set(newMaterial, {
+                    nombre : nombre, 
+                    tipo : tipo,
+                    data: data,
+                    visible: visible,
+                })
+                res.status(200).json({ message: "Material añadido" });
+            } else if(tipo == 'PDF'){
+                
+                let file = req.files.file;
+                file.mv('public/public/'+curso +'/' +file.name, true, function(err) {
+                    console.log('moving file')
+                    if (err){
+                        console.log('error subiendo archivo')
+                        console.log(err)
+                        return res.status(500).send(err);
+                    }
+
+                })
+                set(newMaterial, {
+                    nombre : nombre, 
+                    tipo : tipo,
+                    file: file.name,
+                    visible: visible,
+                })
+                res.status(200).json({ message: "FILE UPLOADED" });
+            }
+
+        
+
+            
         }
     
     } catch (error) {
