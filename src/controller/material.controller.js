@@ -1,3 +1,4 @@
+import { async } from "@firebase/util";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, push, get, child, update, remove} from "firebase/database";
 import firebaseApp from '../database.js';
@@ -124,6 +125,47 @@ export const deleteMaterial = async function(req, res){
                 res.status(401).json({ message: "No se ha encontrado el curso", });
             }
         })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+}
+
+//Test
+export const test = async function(req, res){
+    try{
+        //res.status(200).json({ message: JSON.parse(req) });
+        console.log('test')
+        console.log('headers')
+        console.log(req.headers)
+        console.log('body')
+        console.log(req.body)
+        console.log('curso')
+        console.log(req.body.curso)
+        console.log('file')
+        console.log(req.files.file)
+        //console.log(req)
+        let file = req.files.file;
+        let curso = req.body.curso
+        //console.log(req.files.file)
+       // console.log(__dirname)
+       
+       
+
+       res.status(200).json({fileName: file.name, filePath: `/public/images/${file.name}`});
+   
+        file.mv('public/'+curso +'/' +file.name, true, function(err) {
+            console.log('moving file')
+            if (err){
+                console.log('error subiendo archivo')
+                console.log(err)
+                return res.status(500).send(err);
+            }
+            res.status(200).json({ message: "FILE UPLOADED" });
+        });
+        
+
+        //res.status(200).json({ message: "Test Succeeded" });
     } catch (error) {
         console.log(error);
         res.status(400).json({ message: "An error occured" });

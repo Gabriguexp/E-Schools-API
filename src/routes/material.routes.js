@@ -4,6 +4,8 @@ import * as materialController from '../controller/material.controller.js'
 
 router.post('/store', materialController.storeMaterial)
 
+router.post('/test', materialController.test)
+
 //router.get('/index', materialController.indexMaterial)
 
 //router.get('/:cursoid', materialController.getMaterialById)

@@ -1,9 +1,22 @@
 import express from 'express';
 import bodyParser from 'body-parser'
 import cors from 'cors'
-
+import fileUpload from 'express-fileupload';
 
 const app = express();
+//app.use(fileUpload());
+
+app.use(fileUpload({
+    createParentPath: true
+}));
+
+/*
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+    next()
+})
+*/
 
 import userRoutes from './routes/user.routes.js';
 import authRoutes from './routes/auth.routes.js'
