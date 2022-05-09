@@ -18,7 +18,7 @@ export const storeMaterial = async function(req, res){
             const newMaterial = push(materiales)
             let data = req.body.data;
 
-            if(tipo == 'Enlace'){
+            if(tipo == 'enlace'){
                 set(newMaterial, {
                     nombre : nombre, 
                     tipo : tipo,
@@ -45,6 +45,12 @@ export const storeMaterial = async function(req, res){
                     visible: visible,
                 })
                 res.status(200).json({ message: "FILE UPLOADED" });
+            } else if (tipo == 'bloque'){
+                set(newMaterial, {
+                    nombre : nombre, 
+                    tipo : tipo,
+                    visible: visible,
+                })
             }
 
         
@@ -80,6 +86,31 @@ export const indexMaterial = async function(req, res){
     }
 }
 
+export const getBloques = async function(req, res){
+    try{
+        let id = req.params.cursoid
+        let bloques = []
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'curso/'+ id +'/material')).then((snapshot) => {
+            if (snapshot.exists()) {
+                let material = snapshot.val()
+                for(var i in material){
+                    if (material[i].tipo == 'bloque'){
+                        bloques.push([i, material[i]])
+                    }
+                }
+                res.status(200).json({ message: "Devolviendo bloques", bloques: bloques });
+            } else {
+                console.log("No data available");
+                res.status(200).json({ message: "No hay materiales disponibles actualmente para este curso", });
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+}
+
 export const getMaterialById = async function(req, res){
     try{
         let cursoid = req.params.cursoid;
@@ -88,8 +119,8 @@ export const getMaterialById = async function(req, res){
         get(child(dbRef, 'curso/'+ cursoid+'/material/'+ materialid)).then((snapshot) => {
             if (snapshot.exists()) {
                 //console.log(snapshot.val());
-                let curso = snapshot.val()
-                res.status(200).json({ message: "Devolviendo material", curso: curso });
+                let material = snapshot.val()
+                res.status(200).json({ message: "Devolviendo material", material: material });
             } else {
                 console.log("No data available");
                 res.status(200).json({ message: "No se ha encontrado el material", });
@@ -104,36 +135,35 @@ export const getMaterialById = async function(req, res){
 export const updateMaterial = async function(req, res){
     try{
         let nombre = req.body.nombre;
-        let descripcion = req.body.descripcion
-        let precio = req.body.precio
-        let id = req.params.cursoid;
+        let visible = req.body.visible
+        let idcurso = req.params.cursoid;
+        let materialid = req.params.materialid
         const dbRef = ref(getDatabase());
-        get(child(dbRef, 'curso/'+ id)).then((snapshot) => {
+        
+        get(child(dbRef, 'curso/'+ idcurso+'/material/'+ materialid)).then((snapshot) => {
             if (snapshot.exists()) {
                 //console.log(snapshot.val());
-                const curso = ref(db, 'curso/'+id)
+                const material = ref(db, 'curso/'+ idcurso+'/material/'+ materialid)
                 
-                update(curso, {
+                update(material, {
                     nombre : nombre, 
-                    descripcion : descripcion,
-                    precio: precio,
+                    visible : visible,
                 })
 
-                res.status(200).json({ message: "curso actualizado", });
+                res.status(200).json({ message: "material actualizado", });
             } else {
                 console.log("No data available");
-                res.status(401).json({ message: "No se ha encontrado el curso", });
+                res.status(401).json({ message: "No se ha encontrado el material", });
             }
         })
-
-
-
         
     } catch (error) {
         console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
+
+import {unlink} from 'node:fs'
 
 export const deleteMaterial = async function(req, res){
     try{
@@ -145,7 +175,19 @@ export const deleteMaterial = async function(req, res){
             if (snapshot.exists()) {
 
                 const material = ref(db, 'curso/'+ cursoid+'/material/'+ materialid)
+                let materialSnapShot = snapshot.val()
+                if (materialSnapShot.tipo == 'PDF'){
+                    let file = snapshot.val().file
+                    let path = 'public/public/'+cursoid +'/' +file
+                       unlink(path, function(){
+                        console.log('borrado el archivo')
+                    })
+                }
+                
+                
                 remove(material)
+                
+
                 res.status(200).json({ message: "Material borrado.", });
 
             } else {
@@ -153,12 +195,13 @@ export const deleteMaterial = async function(req, res){
                 res.status(401).json({ message: "No se ha encontrado el material", });
             }
         })
+        
     } catch (error) {
         console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
-
+/*
 //Test
 export const test = async function(req, res){
     try{
@@ -199,3 +242,4 @@ export const test = async function(req, res){
         res.status(400).json({ message: "An error occured" });
     }
 }
+*/
