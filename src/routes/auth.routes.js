@@ -15,8 +15,9 @@ router.post('/checksessiontoken', authController.checkUserLogged)
 
 router.post('/logout', authController.logout)
 
+router.post('/inviteUser', authController.inviteUser)
 
-
+router.get('/getInvitacion/:tokenRegistro', authController.getInvitacion)
 
 /*
 router.post('/inviteuser', function(req, res){
