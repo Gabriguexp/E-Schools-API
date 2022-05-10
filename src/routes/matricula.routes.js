@@ -1,6 +1,7 @@
 import {Router} from 'express';
 const router = Router();
 import * as matriculaController from '../controller/matricula.controller.js'
+import * as UserController from '../controller/user.controller.js'
 
 router.post('/store', matriculaController.storeMatricula)
 
