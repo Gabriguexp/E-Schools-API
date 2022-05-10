@@ -11,6 +11,8 @@ export const storeMatricula = async function(req, res){
     try{
         let idAlumno = req.body.idalumno;
         let idCurso = req.body.idcurso
+        let nombreAlumno = req.body.nombreAlumno
+        let nombreCurso = req.body.nombreCurso
         console.log('matriculando')
         if ( (idAlumno == '' || idCurso == '') || (idAlumno == undefined || idCurso == undefined) ) {
             res.status(401).json({ message: "Algún campo está vacio" });
@@ -25,7 +27,9 @@ export const storeMatricula = async function(req, res){
                 idcurso: idCurso,
                 activa: true,
                 fechainicio: new Date().toLocaleString(),
-                fechafin: '26/05/2030'
+                fechafin: '26/05/2030',
+                nombreAlumno: nombreAlumno,
+                nombreCurso: nombreCurso
             })
             res.status(200).json({ message: "matricula añadida" });
         }
@@ -53,10 +57,10 @@ export const indexMatricula = async function(req, res){
                 
                 // console.log(matricula);
                 
-                // res.status(200).json({ message: "Devolviendo matricula", matricula: matricula });
+                res.status(200).json({ message: "Devolviendo matricula", matricula: matricula });
             } else {
                 console.log("No data available");
-                // res.status(200).json({ message: "No hay matricula disponibles actualmente", });
+                res.status(200).json({ message: "No hay matricula disponibles actualmente", });
             }
         })
         for(var i in matricula){
@@ -95,6 +99,36 @@ export const getMatriculaById = async function(req, res){
             } else {
                 console.log("No data available");
                 res.status(200).json({ message: "No se ha encontrado la matricula", });
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+}
+
+export const getMatriculaByUser = async function(req, res){
+    try{
+        let id = req.params.userid;
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'matricula')).then((snapshot) => {
+            if (snapshot.exists()) {
+                //console.log(snapshot.val());
+                let matricula = snapshot.val()
+                let matriculas = []
+                for(var i in matricula){
+                    if (matricula[i].idalumno == id){
+                        matriculas.push(matricula[i])
+                    }
+                }
+                if(matriculas.length > 0){
+                    res.status(200).json({ message: "Devolviendo matricula", matricula: matriculas });
+                } else {
+                    res.status(200).json({ message: "El usuario no tiene matriculas", });    
+                }
+            } else {
+                console.log("No data available");
+                res.status(200).json({ message: "El usuario no tiene matriculas", });
             }
         })
     } catch (error) {

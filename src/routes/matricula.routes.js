@@ -9,6 +9,8 @@ router.get('/index', matriculaController.indexMatricula)
 
 router.get('/:matriculaid', matriculaController.getMatriculaById)
 
+router.get('/getmatriculabyuser/:userid', matriculaController.getMatriculaByUser)
+
 router.put('/:matriculaid', matriculaController.updateMatricula)
 
 /*

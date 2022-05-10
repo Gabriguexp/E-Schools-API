@@ -11,10 +11,15 @@ export const storeMaterial = async function(req, res){
         let tipo = req.body.tipo;
         let visible = req.body.visible;
         let curso = req.body.curso;
+        let bloque = req.body.bloque
+        console.log('Bloque: ' + bloque)
         if (nombre == '' && descripcion == '' && visible == '' && curso == '') {
             res.status(401).json({ message: "Algún campo está vacio" });
-        } else {            
-            const materiales = ref(db, 'curso/'+ curso +'/material')
+        } else {       
+            let materiales = ref(db, 'curso/'+ curso +'/material')
+            if (bloque != undefined && bloque != ''){
+                materiales = ref(db, 'curso/'+ curso +'/material/'+ bloque + '/material')
+            }
             const newMaterial = push(materiales)
             let data = req.body.data;
 
