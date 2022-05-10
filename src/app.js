@@ -28,6 +28,17 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(cors())
 
+import {fileURLToPath} from 'url';
+import path from 'path';
+const __filename = fileURLToPath(import.meta.url);
+
+const __dirname = path.dirname(__filename);
+
+
+console.log('asdf')
+console.log(__dirname)
+app.use(express.static(path.join(__dirname, '..', 'public' )));
+
 app.use('/user', userRoutes);
 app.use('/auth', authRoutes);
 app.use('/curso', cursoRoutes);
