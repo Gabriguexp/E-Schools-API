@@ -107,6 +107,36 @@ export const getMatriculaById = async function(req, res){
     }
 }
 
+export const getMatriculaByUser = async function(req, res){
+    try{
+        let id = req.params.userid;
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'matricula')).then((snapshot) => {
+            if (snapshot.exists()) {
+                //console.log(snapshot.val());
+                let matricula = snapshot.val()
+                let matriculas = []
+                for(var i in matricula){
+                    if (matricula[i].idalumno == id){
+                        matriculas.push(matricula[i])
+                    }
+                }
+                if(matriculas.length > 0){
+                    res.status(200).json({ message: "Devolviendo matricula", matricula: matriculas });
+                } else {
+                    res.status(200).json({ message: "El usuario no tiene matriculas", });    
+                }
+            } else {
+                console.log("No data available");
+                res.status(200).json({ message: "El usuario no tiene matriculas", });
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+}
+
 export const updateMatricula = async function(req, res){
     try{
 
