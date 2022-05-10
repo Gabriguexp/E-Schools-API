@@ -51,13 +51,16 @@ export const storeMaterial = async function(req, res){
                     tipo : tipo,
                     visible: visible,
                 })
+            } else if (tipo == 'tarea'){
+                let descripcion = req.body.descripcion
+                set(newMaterial, {
+                    nombre : nombre, 
+                    tipo : tipo,
+                    visible: visible,
+                    descripcion: descripcion
+                })
             }
-
-        
-
-            
         }
-    
     } catch (error) {
         console.log(error);
         res.status(400).json({ message: "An error occured" });
@@ -138,17 +141,26 @@ export const updateMaterial = async function(req, res){
         let visible = req.body.visible
         let idcurso = req.params.cursoid;
         let materialid = req.params.materialid
+        let descripcion = req.body.descripcion
         const dbRef = ref(getDatabase());
         
         get(child(dbRef, 'curso/'+ idcurso+'/material/'+ materialid)).then((snapshot) => {
             if (snapshot.exists()) {
                 //console.log(snapshot.val());
                 const material = ref(db, 'curso/'+ idcurso+'/material/'+ materialid)
+                if (descripcion != undefined && descripcion != ''){
+                    update(material, {
+                        nombre : nombre, 
+                        visible : visible,
+                        descripcion: descripcion,
+                    })
+                } else {
+                    update(material, {
+                        nombre : nombre, 
+                        visible : visible,
+                    })
+                }
                 
-                update(material, {
-                    nombre : nombre, 
-                    visible : visible,
-                })
 
                 res.status(200).json({ message: "material actualizado", });
             } else {

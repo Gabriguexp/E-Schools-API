@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, onValue, get, child, } from "firebase/database";
+import { getDatabase, ref, set, onValue, get, child, remove, } from "firebase/database";
 import { initializeAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, getAuth, onAuthStateChanged, signOut,  } from "firebase/auth";
 import firebaseApp from '../database.js';
 import transporter from '../email.js'
@@ -130,7 +130,8 @@ export const registerProfesor = async function(req, res){
                       rol: 'profesor',
                       activo: true,
                     });
-      
+                    const invitacion = ref(db, 'invitacion/'+tokenRegistro)
+                    remove(invitacion)
                     res.status(200).json({ message: "Registro correcto" });
                     return
                 },
@@ -294,6 +295,7 @@ export const inviteUser = async function(req, res ){
   });
   res.status(200).json({ message: "Invitación enviada"  }); 
 }
+
 
 export const getInvitacion = async function(req, res){
   let tokenRegistro = req.params.tokenRegistro
