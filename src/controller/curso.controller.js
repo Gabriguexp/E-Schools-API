@@ -33,12 +33,16 @@ export const storeCurso = async function(req, res){
 export const indexCurso = async function(req, res){
     try{
         let cursos = {}
+        let cursosFormatted = []
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'curso')).then((snapshot) => {
             if (snapshot.exists()) {
                 //console.log(snapshot.val());
                 cursos = snapshot.val()
-                res.status(200).json({ message: "Devolviendo cursos", cursos: cursos });
+                for(var i in cursos){                    
+                    cursosFormatted.push([i, cursos[i]])
+                }
+                res.status(200).json({ message: "Devolviendo cursos", cursos: cursosFormatted });
             } else {
                 console.log("No data available");
                 res.status(200).json({ message: "No hay cursos disponibles actualmente", });
