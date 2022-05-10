@@ -156,6 +156,25 @@ export const getUserById = async function(req, res){
     }
 }
 
+export const getAlumnoById = async function(id){
+    try{
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'users/'+ id)).then((snapshot) => {
+            if (snapshot.exists()) {
+                //console.log(snapshot.val());
+                let usuario = snapshot.val()
+                return usuario.nombre;
+            } else {
+                console.log("No data available");
+                return 'No hay';
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        return 'No hay';
+    }
+}
+
 export const updateUser =  async function(req, res){
     try{
         //let email = req.body.email;
@@ -239,7 +258,7 @@ export const resetPassword = async function(req, res){
         sendPasswordResetEmail(auth, email)
         .then(() => {
           console.log('Password reset email sent!')
-          res.status(200).json({ message: 'Email de reseteo de contraseña enviado.' });
+          res.status(200).json({ message: 'Se ha enviado un correo electrónico con toda la información' });
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -266,7 +285,7 @@ export const addCursoToProfesor = async function(req, res){
                 const cursos = ref(db, 'users/'+profesorId+'/cursos')
                 const newProfesorCurso = push(cursos)
                 set(newProfesorCurso, {
-                    curso : cursoId, 
+                    curso : cursoId,
                 })
                 res.status(200).json({ message: "Curso añadido al profesor", });
             } else {
