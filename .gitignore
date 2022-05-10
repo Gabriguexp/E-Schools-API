@@ -66,6 +66,11 @@ dist
 
 # Needed For HTTPS config
 # src/index.js
+<<<<<<< Updated upstream
 src/admin.authdb.js
 
 src/e-schoolsadmin.js
+=======
+src/e-schoolsadmin.js
+src/admin.authdb.js
+>>>>>>> Stashed changes
