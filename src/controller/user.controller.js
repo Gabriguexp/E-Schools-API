@@ -258,7 +258,7 @@ export const resetPassword = async function(req, res){
         sendPasswordResetEmail(auth, email)
         .then(() => {
           console.log('Password reset email sent!')
-          res.status(200).json({ message: 'Email de reseteo de contraseña enviado.' });
+          res.status(200).json({ message: 'Se ha enviado un correo electrónico con toda la información' });
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -285,7 +285,7 @@ export const addCursoToProfesor = async function(req, res){
                 const cursos = ref(db, 'users/'+profesorId+'/cursos')
                 const newProfesorCurso = push(cursos)
                 set(newProfesorCurso, {
-                    curso : cursoId, 
+                    curso : cursoId,
                 })
                 res.status(200).json({ message: "Curso añadido al profesor", });
             } else {
