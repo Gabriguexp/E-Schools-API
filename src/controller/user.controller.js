@@ -156,6 +156,25 @@ export const getUserById = async function(req, res){
     }
 }
 
+export const getAlumnoById = async function(id){
+    try{
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'users/'+ id)).then((snapshot) => {
+            if (snapshot.exists()) {
+                //console.log(snapshot.val());
+                let usuario = snapshot.val()
+                return usuario.nombre;
+            } else {
+                console.log("No data available");
+                return 'No hay';
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        return 'No hay';
+    }
+}
+
 export const updateUser =  async function(req, res){
     try{
         //let email = req.body.email;
