@@ -67,6 +67,7 @@ dist
 # Needed For HTTPS config
 # src/index.js
 src/admin.authdb.js
+
 src/e-schoolsadmin.js
 src/email.js
 public/*
