@@ -69,3 +69,5 @@ dist
 src/admin.authdb.js
 
 src/e-schoolsadmin.js
+
+src/email.js
