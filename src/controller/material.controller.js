@@ -290,7 +290,29 @@ export const deleteMaterial = async function(req, res){
     }
 }
 
-export const    uploadTarea = async function(req, res){
+export const checkUploadedTarea = async function(req, res){
+    try{
+        let tarea = req.params.tareaid
+        let userid = req.params.userid
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'users/' + userid +'/entrega/'+ tarea)).then((snapshot) => {
+            if (snapshot.exists()) {
+                
+                let nota = snapshot.val().nota
+                res.status(200).json({ message: "Tarea ya subida", entregada: true, nota: nota });
+            } else {
+                console.log("No data available for good ");
+                res.status(200).json({ message: "Tarea no subida", entregada: false });
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+
+}
+
+export const uploadTarea = async function(req, res){
     try{
         let tarea = req.body.tarea
         let userid = req.body.userid
@@ -306,15 +328,14 @@ export const    uploadTarea = async function(req, res){
 
         })
 
-        let tareas = ref(db, 'users/' + userid +'/entrega/')
-        const newTarea = push(tareas)
         console.log('tarea: ' + tarea)
         console.log('file: ' + file.name)
-        set(newTarea, {
+        set(ref(db, 'users/' + userid + '/entrega/' + tarea), {
             tarea : tarea, 
             file: file.name,
+            nota: -1
         })
-        res.status(200).json({ message: "FILE UPLOADED" });
+        res.status(200).json({ message: "Tarea subida" });
     } catch (error) {
         console.log(error);
         res.status(400).json({ message: "An error occured" });
