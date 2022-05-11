@@ -47,3 +47,33 @@ export const getTareasEntregadas =  async function(req, res){
         res.status(400).json({ message: "An error occured" });
     }
 }
+
+export const calificarTarea =  async function(req, res){
+    try{
+        console.log('a s d f')
+        let idtarea = req.body.idtarea
+        let iduser = req.body.iduser
+        let nota = req.body.nota
+        let comentario = req.body.comentario
+        const dbRef = ref(getDatabase());
+        
+        get(child(dbRef, 'users/'+ iduser+'/entrega/'+ idtarea)).then((snapshot) => {
+            if (snapshot.exists()) {
+                //console.log(snapshot.val());
+                const entrega = ref(db, 'users/'+ iduser+'/entrega/'+ idtarea)
+                update(entrega, {
+                    nota : nota, 
+                    comentario : comentario,
+                })
+                res.status(200).json({ message: "Calificacion hecha", });
+            } else {
+                console.log("No data available");
+                res.status(401).json({ message: "No se ha encontrado la entrega", });
+            }
+        })
+       
+    }catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+}
