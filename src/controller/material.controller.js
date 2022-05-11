@@ -249,45 +249,6 @@ export const updateMaterialFromBloque = async function(req, res){
 
 import {unlink} from 'node:fs'
 
-/*
-export const deleteMaterial = async function(req, res){
-    try{
-        let cursoid = req.body.cursoid;
-        let materialid = req.body.materialid;
-        console.log('cursoid'+ cursoid)
-        const dbRef = ref(getDatabase());
-        get(child(dbRef, 'curso/'+ cursoid+'/material/'+ materialid)).then((snapshot) => {
-            if (snapshot.exists()) {
-
-                const material = ref(db, 'curso/'+ cursoid+'/material/'+ materialid)
-                let materialSnapShot = snapshot.val()
-                if (materialSnapShot.tipo == 'PDF'){
-                    let file = snapshot.val().file
-                    let path = 'public/public/'+cursoid +'/' +file
-                       unlink(path, function(){
-                        console.log('borrado el archivo')
-                    })
-                }
-                
-                
-                remove(material)
-                
-
-                res.status(200).json({ message: "Material borrado.", });
-
-            } else {
-                console.log("No data available");
-                res.status(401).json({ message: "No se ha encontrado el material", });
-            }
-        })
-        
-    } catch (error) {
-        console.log(error);
-        res.status(400).json({ message: "An error occured" });
-    }
-}
-*/
-
 export const deleteMaterial = async function(req, res){
     try{
         let cursoid = req.body.cursoid;
@@ -328,45 +289,35 @@ export const deleteMaterial = async function(req, res){
         res.status(400).json({ message: "An error occured" });
     }
 }
-/*
-//Test
-export const test = async function(req, res){
-    try{
-        //res.status(200).json({ message: JSON.parse(req) });
-        console.log('test')
-        console.log('headers')
-        console.log(req.headers)
-        console.log('body')
-        console.log(req.body)
-        console.log('curso')
-        console.log(req.body.curso)
-        console.log('file')
-        console.log(req.files.file)
-        //console.log(req)
-        let file = req.files.file;
-        let curso = req.body.curso
-        //console.log(req.files.file)
-       // console.log(__dirname)
-       
-       
 
-       res.status(200).json({fileName: file.name, filePath: `/public/images/${file.name}`});
-   
-        file.mv('public/'+curso +'/' +file.name, true, function(err) {
+export const    uploadTarea = async function(req, res){
+    try{
+        let tarea = req.body.tarea
+        let userid = req.body.userid
+        let file = req.files.entrega;
+
+        file.mv('public/public/usuarios/'+ userid +'/'+ tarea + '/' +file.name, true, function(err) {
             console.log('moving file')
             if (err){
                 console.log('error subiendo archivo')
                 console.log(err)
                 return res.status(500).send(err);
             }
-            res.status(200).json({ message: "FILE UPLOADED" });
-        });
-        
 
-        //res.status(200).json({ message: "Test Succeeded" });
+        })
+
+        let tareas = ref(db, 'users/' + userid +'/entrega/')
+        const newTarea = push(tareas)
+        console.log('tarea: ' + tarea)
+        console.log('file: ' + file.name)
+        set(newTarea, {
+            tarea : tarea, 
+            file: file.name,
+        })
+        res.status(200).json({ message: "FILE UPLOADED" });
     } catch (error) {
         console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
+
 }
-*/
