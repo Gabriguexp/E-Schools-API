@@ -299,7 +299,8 @@ export const checkUploadedTarea = async function(req, res){
             if (snapshot.exists()) {
                 
                 let nota = snapshot.val().nota
-                res.status(200).json({ message: "Tarea ya subida", entregada: true, nota: nota });
+                let comentario = snapshot.val().comentario
+                res.status(200).json({ message: "Tarea ya subida", entregada: true, nota: nota, comentario: comentario });
             } else {
                 console.log("No data available for good ");
                 res.status(200).json({ message: "Tarea no subida", entregada: false });
@@ -333,12 +334,12 @@ export const uploadTarea = async function(req, res){
         set(ref(db, 'users/' + userid + '/entrega/' + tarea), {
             tarea : tarea, 
             file: file.name,
-            nota: -1
+            nota: -1,
+            comentario : '',
         })
         res.status(200).json({ message: "Tarea subida" });
     } catch (error) {
         console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
-
 }

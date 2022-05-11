@@ -22,7 +22,6 @@ router.put('/:cursoid/:bloqueid/:materialid', materialController.updateMaterialF
 
 router.post('/deletematerial', materialController.deleteMaterial)
 
-
 router.post('/uploadTarea', materialController.uploadTarea)
 
 export default router;
