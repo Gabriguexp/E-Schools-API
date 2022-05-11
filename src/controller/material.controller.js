@@ -140,6 +140,29 @@ export const getMaterialById = async function(req, res){
     }
 }
 
+export const getMaterialByIdFromBloque = async function(req, res){
+    try{
+        let cursoid = req.params.cursoid;
+        let bloqueid = req.params.bloqueid
+        let materialid = req.params.materialid;
+        let path = 'curso/'+ cursoid+'/material/'+ bloqueid +'/material/'+ materialid
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, path)).then((snapshot) => {
+            if (snapshot.exists()) {
+                //console.log(snapshot.val());
+                let material = snapshot.val()
+                res.status(200).json({ message: "Devolviendo material", material: material });
+            } else {
+                console.log("No data available");
+                res.status(200).json({ message: "No se ha encontrado el material", });
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+}
+
 export const updateMaterial = async function(req, res){
     try{
         let nombre = req.body.nombre;
@@ -180,8 +203,53 @@ export const updateMaterial = async function(req, res){
     }
 }
 
+export const updateMaterialFromBloque = async function(req, res){
+    try{
+        let nombre = req.body.nombre;
+        let visible = req.body.visible
+        let cursoid = req.params.cursoid;
+        let bloqueid = req.params.bloqueid
+        let materialid = req.params.materialid
+        let descripcion = req.body.descripcion
+        
+        const dbRef = ref(getDatabase());
+        
+        get(child(dbRef, 'curso/'+ cursoid+'/material/'+ bloqueid +'/material/'+ materialid)).then((snapshot) => {
+            
+            if (snapshot.exists()) {
+                console.log('updatematerialfrombloque')    
+                //console.log(snapshot.val());
+                const material = ref(db, 'curso/'+ cursoid+'/material/'+ bloqueid +'/material/'+ materialid)
+                if (descripcion != undefined && descripcion != ''){
+                    update(material, {
+                        nombre : nombre, 
+                        visible : visible,
+                        descripcion: descripcion,
+                    })
+                } else {
+                    update(material, {
+                        nombre : nombre, 
+                        visible : visible,
+                    })
+                }
+                
+
+                res.status(200).json({ message: "material actualizado", });
+            } else {
+                console.log("No data available");
+                res.status(401).json({ message: "No se ha encontrado el material", });
+            }
+        })
+        
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+}
+
 import {unlink} from 'node:fs'
 
+/*
 export const deleteMaterial = async function(req, res){
     try{
         let cursoid = req.body.cursoid;
@@ -205,6 +273,48 @@ export const deleteMaterial = async function(req, res){
                 remove(material)
                 
 
+                res.status(200).json({ message: "Material borrado.", });
+
+            } else {
+                console.log("No data available");
+                res.status(401).json({ message: "No se ha encontrado el material", });
+            }
+        })
+        
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+}
+*/
+
+export const deleteMaterial = async function(req, res){
+    try{
+        let cursoid = req.body.cursoid;
+        let materialid = req.body.materialid;
+        let bloqueid = req.body.bloqueid;
+        console.log('cursoid'+ cursoid)
+        let dbpath = 'curso/'+ cursoid+'/material/'+ materialid
+        if (bloqueid != undefined && bloqueid != ''){
+            dbpath = 'curso/'+ cursoid+'/material/'+ bloqueid +'/material/'+ materialid
+        }
+        console.log('dbpath')
+        console.log(dbpath)
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, dbpath)).then((snapshot) => {
+            
+            if (snapshot.exists()) {
+                console.log('DELETE')
+                const material = ref(db, dbpath)
+                let materialSnapShot = snapshot.val()
+                if (materialSnapShot.tipo == 'PDF'){
+                    let file = snapshot.val().file
+                    let path = 'public/public/'+cursoid +'/' +file
+                       unlink(path, function(){
+                        console.log('borrado el archivo')
+                    })
+                }          
+                remove(material)
                 res.status(200).json({ message: "Material borrado.", });
 
             } else {

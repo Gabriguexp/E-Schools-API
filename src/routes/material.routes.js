@@ -12,9 +12,11 @@ router.get('/:cursoid/bloques', materialController.getBloques)
 
 router.get('/:cursoid/:materialid', materialController.getMaterialById)
 
+router.get('/:cursoid/:bloqueid/:materialid', materialController.getMaterialByIdFromBloque)
+
 router.put('/:cursoid/:materialid', materialController.updateMaterial)
 
-//router.post('/', materialController.deleteMaterial)
+router.put('/:cursoid/:bloqueid/:materialid', materialController.updateMaterialFromBloque)
 
 router.post('/deletematerial', materialController.deleteMaterial)
 
