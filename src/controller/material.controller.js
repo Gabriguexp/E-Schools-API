@@ -17,7 +17,7 @@ export const storeMaterial = async function(req, res){
             res.status(401).json({ message: "Algún campo está vacio" });
         } else {       
             let materiales = ref(db, 'curso/'+ curso +'/material')
-            if (bloque != undefined && bloque != ''){
+            if (bloque != undefined && bloque != '' && bloque != 'undefined'){
                 materiales = ref(db, 'curso/'+ curso +'/material/'+ bloque + '/material')
             }
             const newMaterial = push(materiales)
