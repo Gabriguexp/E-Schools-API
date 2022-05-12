@@ -17,7 +17,7 @@ export const storeMaterial = async function(req, res){
             res.status(401).json({ message: "Algún campo está vacio" });
         } else {       
             let materiales = ref(db, 'curso/'+ curso +'/material')
-            if (bloque != undefined && bloque != ''){
+            if (bloque != undefined && bloque != '' && bloque != 'undefined'){
                 materiales = ref(db, 'curso/'+ curso +'/material/'+ bloque + '/material')
             }
             const newMaterial = push(materiales)
@@ -140,6 +140,29 @@ export const getMaterialById = async function(req, res){
     }
 }
 
+export const getMaterialByIdFromBloque = async function(req, res){
+    try{
+        let cursoid = req.params.cursoid;
+        let bloqueid = req.params.bloqueid
+        let materialid = req.params.materialid;
+        let path = 'curso/'+ cursoid+'/material/'+ bloqueid +'/material/'+ materialid
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, path)).then((snapshot) => {
+            if (snapshot.exists()) {
+                //console.log(snapshot.val());
+                let material = snapshot.val()
+                res.status(200).json({ message: "Devolviendo material", material: material });
+            } else {
+                console.log("No data available");
+                res.status(200).json({ message: "No se ha encontrado el material", });
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+}
+
 export const updateMaterial = async function(req, res){
     try{
         let nombre = req.body.nombre;
@@ -180,18 +203,70 @@ export const updateMaterial = async function(req, res){
     }
 }
 
+export const updateMaterialFromBloque = async function(req, res){
+    try{
+        let nombre = req.body.nombre;
+        let visible = req.body.visible
+        let cursoid = req.params.cursoid;
+        let bloqueid = req.params.bloqueid
+        let materialid = req.params.materialid
+        let descripcion = req.body.descripcion
+        
+        const dbRef = ref(getDatabase());
+        
+        get(child(dbRef, 'curso/'+ cursoid+'/material/'+ bloqueid +'/material/'+ materialid)).then((snapshot) => {
+            
+            if (snapshot.exists()) {
+                console.log('updatematerialfrombloque')    
+                //console.log(snapshot.val());
+                const material = ref(db, 'curso/'+ cursoid+'/material/'+ bloqueid +'/material/'+ materialid)
+                if (descripcion != undefined && descripcion != ''){
+                    update(material, {
+                        nombre : nombre, 
+                        visible : visible,
+                        descripcion: descripcion,
+                    })
+                } else {
+                    update(material, {
+                        nombre : nombre, 
+                        visible : visible,
+                    })
+                }
+                
+
+                res.status(200).json({ message: "material actualizado", });
+            } else {
+                console.log("No data available");
+                res.status(401).json({ message: "No se ha encontrado el material", });
+            }
+        })
+        
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+}
+
 import {unlink} from 'node:fs'
 
 export const deleteMaterial = async function(req, res){
     try{
         let cursoid = req.body.cursoid;
         let materialid = req.body.materialid;
+        let bloqueid = req.body.bloqueid;
         console.log('cursoid'+ cursoid)
+        let dbpath = 'curso/'+ cursoid+'/material/'+ materialid
+        if (bloqueid != undefined && bloqueid != ''){
+            dbpath = 'curso/'+ cursoid+'/material/'+ bloqueid +'/material/'+ materialid
+        }
+        console.log('dbpath')
+        console.log(dbpath)
         const dbRef = ref(getDatabase());
-        get(child(dbRef, 'curso/'+ cursoid+'/material/'+ materialid)).then((snapshot) => {
+        get(child(dbRef, dbpath)).then((snapshot) => {
+            
             if (snapshot.exists()) {
-
-                const material = ref(db, 'curso/'+ cursoid+'/material/'+ materialid)
+                console.log('DELETE')
+                const material = ref(db, dbpath)
                 let materialSnapShot = snapshot.val()
                 if (materialSnapShot.tipo == 'PDF'){
                     let file = snapshot.val().file
@@ -199,12 +274,8 @@ export const deleteMaterial = async function(req, res){
                        unlink(path, function(){
                         console.log('borrado el archivo')
                     })
-                }
-                
-                
+                }          
                 remove(material)
-                
-
                 res.status(200).json({ message: "Material borrado.", });
 
             } else {
@@ -218,45 +289,57 @@ export const deleteMaterial = async function(req, res){
         res.status(400).json({ message: "An error occured" });
     }
 }
-/*
-//Test
-export const test = async function(req, res){
-    try{
-        //res.status(200).json({ message: JSON.parse(req) });
-        console.log('test')
-        console.log('headers')
-        console.log(req.headers)
-        console.log('body')
-        console.log(req.body)
-        console.log('curso')
-        console.log(req.body.curso)
-        console.log('file')
-        console.log(req.files.file)
-        //console.log(req)
-        let file = req.files.file;
-        let curso = req.body.curso
-        //console.log(req.files.file)
-       // console.log(__dirname)
-       
-       
 
-       res.status(200).json({fileName: file.name, filePath: `/public/images/${file.name}`});
-   
-        file.mv('public/'+curso +'/' +file.name, true, function(err) {
+export const checkUploadedTarea = async function(req, res){
+    try{
+        let tarea = req.params.tareaid
+        let userid = req.params.userid
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'users/' + userid +'/entrega/'+ tarea)).then((snapshot) => {
+            if (snapshot.exists()) {
+                
+                let nota = snapshot.val().nota
+                let comentario = snapshot.val().comentario
+                res.status(200).json({ message: "Tarea ya subida", entregada: true, nota: nota, comentario: comentario });
+            } else {
+                console.log("No data available for good ");
+                res.status(200).json({ message: "Tarea no subida", entregada: false });
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+
+}
+
+export const uploadTarea = async function(req, res){
+    try{
+        let tarea = req.body.tarea
+        let userid = req.body.userid
+        let file = req.files.entrega;
+
+        file.mv('public/public/usuarios/'+ userid +'/'+ tarea + '/' +file.name, true, function(err) {
             console.log('moving file')
             if (err){
                 console.log('error subiendo archivo')
                 console.log(err)
                 return res.status(500).send(err);
             }
-            res.status(200).json({ message: "FILE UPLOADED" });
-        });
-        
 
-        //res.status(200).json({ message: "Test Succeeded" });
+        })
+
+        console.log('tarea: ' + tarea)
+        console.log('file: ' + file.name)
+        set(ref(db, 'users/' + userid + '/entrega/' + tarea), {
+            tarea : tarea, 
+            file: file.name,
+            nota: -1,
+            comentario : '',
+        })
+        res.status(200).json({ message: "Tarea subida" });
     } catch (error) {
         console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
-*/
