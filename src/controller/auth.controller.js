@@ -229,7 +229,7 @@ export const checkUserLogged = async (req, res) => {
             console.log('asdada ')
             console.log(snapshot.val());
             usuario = snapshot.val()
-            return res.status(200).json({message: 'Authentication ok', user: usuario});
+            return res.status(200).json({message: 'Authentication ok', user: usuario, uid: id});
           } else {
             console.log("No data available");
             return res.status(200).json({message: 'Authentication ok', user: ''});
