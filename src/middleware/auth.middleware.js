@@ -24,11 +24,11 @@ export const verifyToken = async (req, res, next) => {
         adminAuth
         .verifyIdToken(idToken, false)
         .then((decodedToken) => {
-        const uid = decodedToken.uid;
+        //const uid = decodedToken.uid;
         // ...
         console.log('a')
         return res.status(200).json({message: 'Authentiation ok'});
-        //next();
+        next();
         })
         .catch((error) => {
         

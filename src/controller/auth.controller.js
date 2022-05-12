@@ -212,7 +212,10 @@ function checkUser(email, res){
 export const checkUserLogged = async (req, res) => {
   try {
 
-    let idToken = req.body.sessiontoken
+    //let idToken = req.body.sessiontoken
+    let idToken = req.headers['x-access-token'];
+    console.log('cabeceras de cul')
+    console.log(req.headers)
     console.log('getauth')
     console.log(auth)
     
@@ -247,6 +250,7 @@ export const checkUserLogged = async (req, res) => {
       return res.status(401).json({message: 'Authentication failed'});
   }
 }
+
 
 export const logout = async(req, res )  => {
   try {
