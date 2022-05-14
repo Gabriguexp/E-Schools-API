@@ -9,6 +9,7 @@ export const storeCurso = async function(req, res){
         let nombre = req.body.nombre;
         let descripcion = req.body.descripcion
         let precio = req.body.precio
+        let priceid = req.body.priceid
         if (nombre == '' && descripcion == '' && precio == '') {
             res.status(401).json({ message: "Algún campo está vacio" });
         } else {
@@ -19,6 +20,7 @@ export const storeCurso = async function(req, res){
                 nombre : nombre, 
                 descripcion : descripcion,
                 precio: precio,
+                priceid: priceid
             })
             res.status(200).json({ message: "Curso añadido" });
         }
@@ -81,6 +83,7 @@ export const updateCurso = async function(req, res){
         let nombre = req.body.nombre;
         let descripcion = req.body.descripcion
         let precio = req.body.precio
+        let priceid = req.body.priceid
         let id = req.params.cursoid;
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'curso/'+ id)).then((snapshot) => {
@@ -92,6 +95,7 @@ export const updateCurso = async function(req, res){
                     nombre : nombre, 
                     descripcion : descripcion,
                     precio: precio,
+                    priceid: priceid
                 })
 
                 res.status(200).json({ message: "curso actualizado", });

@@ -17,4 +17,6 @@ router.put('/:matriculaid', matriculaController.updateMatricula)
 router.delete('/:matriculaid', matriculaController.deleteMatricula)
 */
 
+router.post('/create-checkout-session', matriculaController.createCheckoutSession);
+
 export default router;

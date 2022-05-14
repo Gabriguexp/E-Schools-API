@@ -2,6 +2,10 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, push, get, child, update, remove} from "firebase/database";
 import firebaseApp from '../database.js';
+import Stripe from 'stripe';
+const stripe = Stripe('sk_test_51IsANIBMsQSe7vj6zREYNfQhYeQhjs4gBWF6cYWgwIHBedw7wqHAkKClnnnr8acecOsX5hrLShtUx62Lbe6NQa0700ll925vnS');
+
+
 // const UserController = require('../controller/user');
 // import * as UserController from '';
 
@@ -169,6 +173,31 @@ export const updateMatricula = async function(req, res){
         res.status(400).json({ message: "An error occured" });
     }
 }
+
+export const createCheckoutSession = async (req, res) => {
+    let cursoPriceId = req.body.cursopriceid
+    const session = await stripe.checkout.sessions.create({
+      line_items: [
+        {
+          // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+          //price: 'price_1KydgOBMsQSe7vj6aFvVKN2G',
+          price: cursoPriceId,
+          quantity: 1,
+        },
+      ],
+      mode: 'payment',
+      success_url: `http://localhost:8080/#/curso/matriculapagada`,
+      cancel_url: `http://localhost:8080/#/curso/pagocancelado`,
+    });
+    console.log('session url')
+    console.log(session.url)
+    res.writeHead(307, {
+       Location: session.url
+    }).end();
+    //res.status(200).json({ message: "Redirigiendo", url: session.url });
+    //res.redirect(303, session.url);
+  }
+
 
 export const deleteMatricula = async function(req, res){
     try{
