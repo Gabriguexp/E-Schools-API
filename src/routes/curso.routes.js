@@ -2,18 +2,19 @@ import {Router} from 'express';
 const router = Router();
 import * as cursoController from '../controller/curso.controller.js'
 import * as examenController from '../controller/examen.controller.js'
+import * as authMiddleware from '../middleware/auth.middleware.js'
 
-router.post('/store', cursoController.storeCurso)
+router.post('/store', authMiddleware.verifyAdminToken, cursoController.storeCurso)
 
-router.get('/index', cursoController.indexCurso)
+router.get('/index',  authMiddleware.verifyToken, cursoController.indexCurso)
 
-router.get('/:cursoid', cursoController.getCursoById)
+router.get('/:cursoid', authMiddleware.verifyToken, cursoController.getCursoById)
 
-router.put('/:cursoid', cursoController.updateCurso)
+router.put('/:cursoid', authMiddleware.verifyAdminToken, cursoController.updateCurso)
 
-router.get('/:cursoid/examen/:examenid', examenController.getExamenById)
+router.get('/:cursoid/examen/:examenid', authMiddleware.verifyToken, examenController.getExamenById)
 
-router.put('/:cursoid/examen/:examenid', examenController.updateExamen)
+router.put('/:cursoid/examen/:examenid', authMiddleware.verifyProfesorToken, examenController.updateExamen)
 
 
 
