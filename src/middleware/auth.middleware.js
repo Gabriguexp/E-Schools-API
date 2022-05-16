@@ -46,8 +46,21 @@ export const verifyProfesorToken = async (req, res, next) => {
         get(child(dbRef, 'users/'+ uid)).then((snapshot) => {
             if (snapshot.exists()) {
                 //console.log(snapshot.val());
-                if (snapshot.val().rol == 'profesor' || snapshot.val().rol == 'Administrador'){
+                let usuario = snapshot.val()
+                if (usuario.rol == 'Administrador'){
                     next()
+                }else if(usuario.rol == 'profesor'){
+                    let curso = req.body.curso
+                    if (curso == undefined || curso == ''){
+                        curso = req.params.cursoid
+                    }
+                    for(let i in usuario.cursos){
+                        if( usuario.cursos[i].curso == 'asdf'){
+                            next()
+                            return
+                        }
+                        return res.status(400).json({ message: "No eres profesor de este curso", });        
+                    }
                 }else {
                     return res.status(400).json({ message: "Ruta solo disponible para profesor", });    
                 }
