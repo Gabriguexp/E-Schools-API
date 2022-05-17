@@ -18,6 +18,9 @@ const adminAuth = admin.auth()
 export const verifyToken = async (req, res, next) => {
     try {
         let idToken = req.headers['x-access-token'];
+
+        console.log('idtoken: ' + idToken)
+
         adminAuth
         .verifyIdToken(idToken, false)
         .then((decodedToken) => {
@@ -29,6 +32,9 @@ export const verifyToken = async (req, res, next) => {
             return res.status(403).json({message: 'Authentiation failed'});
         });
     } catch (error) {
+
+        console.log('errorverifytoken')
+        console.log(error)
         return res.status(401).json({message: 'Authentication failed'});
     }
 }
