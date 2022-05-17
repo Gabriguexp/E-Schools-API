@@ -92,6 +92,7 @@ export const indexMatricula = async function(req, res){
 }
 
 export const getMatriculaById = async function(req, res){
+    console.log('getmatriculabyid')
     try{
         let id = req.params.matriculaid;
         const dbRef = ref(getDatabase());
@@ -113,14 +114,18 @@ export const getMatriculaById = async function(req, res){
 
 export const getMatriculaByUser = async function(req, res){
     try{
+        console.log('getmatriculabyuser')
         let id = req.params.userid;
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'matricula')).then((snapshot) => {
             if (snapshot.exists()) {
-                //console.log(snapshot.val());
+                
+                console.log(snapshot.val());
                 let matricula = snapshot.val()
                 let matriculas = []
                 for(var i in matricula){
+                    console.log('matricula id alumno: ' + matricula[i].idalumno)
+                    console.log('this id ' + id)
                     if (matricula[i].idalumno == id){
                         matriculas.push(matricula[i])
                     }
@@ -128,11 +133,11 @@ export const getMatriculaByUser = async function(req, res){
                 if(matriculas.length > 0){
                     res.status(200).json({ message: "Devolviendo matricula", matricula: matriculas });
                 } else {
-                    res.status(200).json({ message: "El usuario no tiene matriculas", });    
+                    res.status(200).json({ message: "El usuario no tiene matriculas", matricula: [] });    
                 }
             } else {
                 console.log("No data available");
-                res.status(200).json({ message: "El usuario no tiene matriculas", });
+                res.status(200).json({ message: "El usuario no tiene matriculas", matricula: [] });
             }
         })
     } catch (error) {

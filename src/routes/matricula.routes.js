@@ -8,6 +8,7 @@ router.post('/store', authMiddleware.verifyAdminToken, matriculaController.store
 
 router.get('/index', authMiddleware.verifyToken, matriculaController.indexMatricula)
 
+
 router.get('/:matriculaid', authMiddleware.verifyToken, matriculaController.getMatriculaById)
 
 router.get('/getmatriculabyuser/:userid', authMiddleware.verifyToken, matriculaController.getMatriculaByUser)
