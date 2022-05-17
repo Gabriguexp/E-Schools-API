@@ -192,8 +192,6 @@ export const updateMaterial = async function(req, res){
                         visible : visible,
                     })
                 }
-                
-
                 res.status(200).json({ message: "material actualizado", });
             } else {
                 console.log("No data available");

@@ -180,26 +180,30 @@ export const updateMatricula = async function(req, res){
 }
 
 export const createCheckoutSession = async (req, res) => {
-    let cursoPriceId = req.body.cursopriceid
-    const session = await stripe.checkout.sessions.create({
-      line_items: [
-        {
-          // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-          //price: 'price_1KydgOBMsQSe7vj6aFvVKN2G',
-          price: cursoPriceId,
-          quantity: 1,
-        },
-      ],
-      mode: 'payment',
-      success_url: `http://localhost:8080/#/curso/matriculapagada`,
-      cancel_url: `http://localhost:8080/#/curso/pagocancelado`,
-    });
-    console.log('session url')
-    console.log(session.url)
-    console.log('creando pago')
-    res.status(200).json({ message: "Redirigiendo", url: session.url });
-
-  }
+    try{
+        let cursoPriceId = req.body.cursopriceid
+        const session = await stripe.checkout.sessions.create({
+        line_items: [
+            {
+            // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+            //price: 'price_1KydgOBMsQSe7vj6aFvVKN2G',
+            price: cursoPriceId,
+            quantity: 1,
+            },
+        ],
+        mode: 'payment',
+        success_url: `http://localhost:8080/#/curso/matriculapagada`,
+        cancel_url: `http://localhost:8080/#/curso/pagocancelado`,
+        });
+        console.log('session url')
+        console.log(session.url)
+        console.log('creando pago')
+        res.status(200).json({ message: "Redirigiendo", url: session.url });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "An error occured" });
+    }
+}
 
 
 export const deleteMatricula = async function(req, res){
