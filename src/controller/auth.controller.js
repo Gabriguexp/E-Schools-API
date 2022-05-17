@@ -214,11 +214,6 @@ export const checkUserLogged = async (req, res) => {
 
     //let idToken = req.body.sessiontoken
     let idToken = req.headers['x-access-token'];
-    console.log('cabeceras de cul')
-    console.log(req.headers)
-    console.log('getauth')
-    console.log(auth)
-    
     adminAuth.verifyIdToken(idToken, false)
     .then((decodedToken) => {
       const id = decodedToken.uid;
@@ -226,8 +221,6 @@ export const checkUserLogged = async (req, res) => {
       let usuario 
       get(child(dbRef, 'users/'+ id)).then((snapshot) => {
           if (snapshot.exists()) {
-            console.log('asdada ')
-            console.log(snapshot.val());
             usuario = snapshot.val()
             return res.status(200).json({message: 'Authentication ok', user: usuario, uid: id});
           } else {

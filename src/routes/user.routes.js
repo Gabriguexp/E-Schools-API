@@ -3,30 +3,29 @@ const router = Router();
 
 import * as UserController from '../controller/user.controller.js'
 
-import * as AuthMiddleware from '../middleware/auth.middleware.js'
-
+import * as authMiddleware from '../middleware/auth.middleware.js'
 
 //router.post('/checktoken', AuthMiddleware.verifyToken)
 
-router.post('/store', UserController.storeUser)
+router.post('/store', authMiddleware.verifyAdminToken, UserController.storeUser)
 
-router.get('/index', UserController.indexUsers)
+router.get('/index', authMiddleware.verifyToken, UserController.indexUsers)
 
-router.get('/alumnos', UserController.getAlumnos)
+router.get('/alumnos', authMiddleware.verifyToken, UserController.getAlumnos)
 
-router.get('/profesores', UserController.getProfesores)
+router.get('/profesores', authMiddleware.verifyToken, UserController.getProfesores)
 
-router.get('/:userid', UserController.getUserById)
+router.get('/:userid', authMiddleware.verifyToken, UserController.getUserById)
 
-router.put('/:userid', UserController.updateUser)
+router.put('/:userid', authMiddleware.verifyToken, UserController.updateUser)
 
-router.post('/disableUser', UserController.disableUser)
+router.post('/disableUser', authMiddleware.verifyAdminToken, UserController.disableUser)
 
-router.post('/enableUser', UserController.enableUser)
+router.post('/enableUser', authMiddleware.verifyAdminToken, UserController.enableUser)
 
 router.post('/resetPassword', UserController.resetPassword)
 
-router.post('/addcursotoprofesor', UserController.addCursoToProfesor)
+router.post('/addcursotoprofesor', authMiddleware.verifyAdminToken, UserController.addCursoToProfesor)
 
 
 
