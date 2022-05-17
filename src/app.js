@@ -12,15 +12,12 @@ app.use(fileUpload({
 
 
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*')
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-
-    res.setHeader('Access-Control-Allow-Origin','*');
-    res.setHeader('Access-Control-Allow-Methods','GET,POST,PUT,PATCH,DELETE');
-    res.setHeader('Access-Control-Allow-Methods','Content-Type','Authorization');
-    next()
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+  next()
 })
-
+app.use(cors())
+app.options('*', cors())
 
 import userRoutes from './routes/user.routes.js';
 import authRoutes from './routes/auth.routes.js'
@@ -32,7 +29,6 @@ import tareaRoutes from './routes/tarea.routes.js'
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-app.use(cors())
 
 import {fileURLToPath} from 'url';
 import path from 'path';
