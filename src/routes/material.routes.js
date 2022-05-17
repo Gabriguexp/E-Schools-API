@@ -3,26 +3,26 @@ const router = Router();
 import * as materialController from '../controller/material.controller.js'
 import * as authMiddleware from '../middleware/auth.middleware.js'
 
-router.post('/store', authMiddleware.verifyProfesorToken, materialController.storeMaterial)
+router.post('/store', materialController.storeMaterial)
 
 //router.post('/test', materialController.test)
 
 //router.get('/index', materialController.indexMaterial)
 
-router.get('/:cursoid/bloques', authMiddleware.verifyToken, materialController.getBloques)
+router.get('/:cursoid/bloques', materialController.getBloques)
 
-router.get('/checkuploadedtarea/:userid/:tareaid', authMiddleware.verifyToken, materialController.checkUploadedTarea)
+router.get('/checkuploadedtarea/:userid/:tareaid', materialController.checkUploadedTarea)
 
-router.get('/:cursoid/:materialid', authMiddleware.verifyToken, materialController.getMaterialById)
+router.get('/:cursoid/:materialid', materialController.getMaterialById)
 
-router.get('/:cursoid/:bloqueid/:materialid', authMiddleware.verifyToken, materialController.getMaterialByIdFromBloque)
+router.get('/:cursoid/:bloqueid/:materialid', materialController.getMaterialByIdFromBloque)
 
-router.put('/:cursoid/:materialid', authMiddleware.verifyProfesorToken, materialController.updateMaterial)
+router.put('/:cursoid/:materialid', materialController.updateMaterial)
 
-router.put('/:cursoid/:bloqueid/:materialid', authMiddleware.verifyProfesorToken, materialController.updateMaterialFromBloque)
+router.put('/:cursoid/:bloqueid/:materialid', materialController.updateMaterialFromBloque)
 
-router.post('/deletematerial', authMiddleware.verifyProfesorToken,materialController.deleteMaterial)
+router.post('/deletematerial',materialController.deleteMaterial)
 
-router.post('/uploadTarea',  authMiddleware.verifyToken,materialController.uploadTarea)
+router.post('/uploadTarea', materialController.uploadTarea)
 
 export default router;
