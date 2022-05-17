@@ -196,9 +196,9 @@ export const createCheckoutSession = async (req, res) => {
     });
     console.log('session url')
     console.log(session.url)
-
     console.log('creando pago')
     res.status(200).json({ message: "Redirigiendo", url: session.url });
+
   }
 
 
