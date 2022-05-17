@@ -12,7 +12,9 @@ export const storeMaterial = async function(req, res){
         let visible = req.body.visible;
         let curso = req.body.curso;
         let bloque = req.body.bloque
-        console.log('Bloque: ' + bloque)
+        console.log('bodys')
+        console.log(req.body)
+        //console.log('Bloque: ' + bloque)
         if (nombre == '' && descripcion == '' && visible == '' && curso == '') {
             res.status(401).json({ message: "Algún campo está vacio" });
         } else {       
@@ -31,7 +33,7 @@ export const storeMaterial = async function(req, res){
                     visible: visible,
                 })
                 res.status(200).json({ message: "Material añadido" });
-            } else if(tipo == 'PDF'){
+            } else if(tipo == 'archivo'){
                 
                 let file = req.files.file;
                 file.mv('public/public/'+curso +'/' +file.name, true, function(err) {
@@ -56,6 +58,7 @@ export const storeMaterial = async function(req, res){
                     tipo : tipo,
                     visible: visible,
                 })
+                res.status(200).json({ message: "Material añadido" });
             } else if (tipo == 'tarea'){
                 let descripcion = req.body.descripcion
                 set(newMaterial, {
@@ -64,6 +67,7 @@ export const storeMaterial = async function(req, res){
                     visible: visible,
                     descripcion: descripcion
                 })
+                res.status(200).json({ message: "Material añadido" });
             }
         }
     } catch (error) {
