@@ -255,7 +255,7 @@ import {unlink} from 'node:fs'
 
 export const deleteMaterial = async function(req, res){
     try{
-        let cursoid = req.body.cursoid;
+        let cursoid = req.body.curso;
         let materialid = req.body.materialid;
         let bloqueid = req.body.bloqueid;
         console.log('cursoid'+ cursoid)

@@ -39,6 +39,8 @@ export const verifyToken = async (req, res, next) => {
 export const verifyProfesorToken = async (req, res, next) => {
     try {
         let idToken = req.headers['x-access-token'];
+        console.log('verificando PROFESOR TOKEN')
+        console.log(idToken)
         adminAuth
         .verifyIdToken(idToken, false)
         .then((decodedToken) => {
@@ -48,22 +50,29 @@ export const verifyProfesorToken = async (req, res, next) => {
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'users/'+ uid)).then((snapshot) => {
             if (snapshot.exists()) {
+                console.log('snapshot exist')
                 //console.log(snapshot.val());
                 let usuario = snapshot.val()
+                console.log('userrol: ' + usuario.rol)
                 if (usuario.rol == 'Administrador'){
                     next()
                 }else if(usuario.rol == 'profesor'){
+                    console.log('a')
                     let curso = req.body.curso
+                    console.log('curso: '+ curso)
                     if (curso == undefined || curso == ''){
+                        console.log('entro en if')
                         curso = req.params.cursoid
+                        console.log('nuevo curso: ' + curso)
                     }
                     for(let i in usuario.cursos){
-                        if( usuario.cursos[i].curso == 'asdf'){
+                        if( usuario.cursos[i].curso == curso){
                             next()
                             return
                         }
-                        return res.status(400).json({ message: "No eres profesor de este curso", });        
                     }
+                    console.log('pringao')
+                    return res.status(400).json({ message: "No eres profesor de este curso", });        
                 }else {
                     return res.status(400).json({ message: "Ruta solo disponible para profesor", });    
                 }
@@ -81,6 +90,7 @@ export const verifyProfesorToken = async (req, res, next) => {
             return res.status(403).json({message: 'Authentiation failed'});
         });
     } catch (error) {
+        console.log('asdf autenticacion failed')
         return res.status(401).json({message: 'Authentication failed'});
     }
 }
