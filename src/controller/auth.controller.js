@@ -113,9 +113,13 @@ export const registerProfesor = async function(req, res){
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'invitacion/'+tokenRegistro)).then((snapshot) => {
           if (snapshot.exists()) {
+
             if (password != rePass){
               
               res.status(401).json({ message: "Las contraseñas no coinciden" });
+              return
+            } else if(email != snapshot.val().email){
+              res.status(401).json({ message: "Este token no es valido para este email." });
               return
             }
             if (emailRegex.test(email) && password.length >=6 && nombre != '' && apellidos != ''){
@@ -264,10 +268,15 @@ export const logout = async(req, res )  => {
 
 export const inviteUser = async function(req, res ){
   let email = req.body.email
-  console.log('email: ' + email)
+  console.log('email invite user: ' + email)
   let enlace = 'http://localhost:8080/#/auth/registerProfesor/' 
   //Añadir token
-  let token = '1234'
+  
+  //let token = '1234'
+  let token = createInviteToken()
+  console.log('el token de invite es: ')
+  console.log(token)
+  
     set(ref(database, 'invitacion/'+token), {
       email: email,
       token: token,
@@ -290,6 +299,7 @@ export const inviteUser = async function(req, res ){
       console.log('Email sent: ' + info.response);
     }
   });
+  
   res.status(200).json({ message: "Invitación enviada"  }); 
 }
 
@@ -307,4 +317,15 @@ export const getInvitacion = async function(req, res){
         return
     }
   })
+}
+
+function createInviteToken(){
+  let s = ""
+  let cad = "qwertyuiopñlkjhgfdsazxcvbnmQWERTYUIOPÑLKJHGFDSAZXCVBNM1234567890"
+  console.log('cad lengthes: '+ cad.length)
+  for(let i = 0; i < 20; i++){
+    let ind = Math.floor(Math.random() * 64);
+    s+= cad.charAt(ind)
+  }
+  return s
 }

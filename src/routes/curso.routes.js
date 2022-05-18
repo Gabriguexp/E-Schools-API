@@ -8,6 +8,8 @@ router.post('/store', authMiddleware.verifyAdminToken, cursoController.storeCurs
 
 router.get('/index',  authMiddleware.verifyToken, cursoController.indexCurso)
 
+router.post('/verifyName', authMiddleware.verifyAdminToken, cursoController.verifyName)
+
 router.get('/:cursoid', authMiddleware.verifyToken, cursoController.getCursoById)
 
 router.put('/:cursoid', authMiddleware.verifyAdminToken, cursoController.updateCurso)

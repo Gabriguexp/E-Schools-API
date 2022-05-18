@@ -45,6 +45,41 @@ export const storeMatricula = async function(req, res){
 
 }
 
+/*
+export const storeFreeMatricula = async function(req, res){
+    try{
+        let idAlumno = req.body.idalumno;
+        let idCurso = req.body.idcurso
+        let nombreAlumno = req.body.nombreAlumno
+        let nombreCurso = req.body.nombreCurso
+        console.log('matriculando')
+        if ( (idAlumno == '' || idCurso == '') || (idAlumno == undefined || idCurso == undefined) ) {
+            res.status(401).json({ message: "Algún campo está vacio" });
+        } else {
+
+            console.log(new Date())
+
+            const matricula = ref(db, 'matricula')
+            const newMatricula = push(matricula)
+            set(newMatricula, {
+                idalumno : idAlumno, 
+                idcurso: idCurso,
+                activa: true,
+                fechainicio: new Date().toLocaleString(),
+                fechafin: '26/05/2030',
+                nombreAlumno: nombreAlumno,
+                nombreCurso: nombreCurso
+            })
+            res.status(200).json({ message: "matricula añadida" });
+        }
+    
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+
+}
+*/
 
 
 export const indexMatricula = async function(req, res){

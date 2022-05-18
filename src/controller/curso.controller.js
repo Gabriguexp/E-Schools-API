@@ -139,3 +139,31 @@ export const deleteCurso = async function(req, res){
         res.status(400).json({ message: "An error occured" });
     }
 }
+
+export const verifyName = async function(req, res){
+    try{
+        let cursos = {}
+        let nombre = req.body.nombre
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'curso')).then((snapshot) => {
+            if (snapshot.exists()) {
+                //console.log(snapshot.val());
+                cursos = snapshot.val()
+                for(var i in cursos){
+                    if(nombre == cursos[i].nombre){
+                        return res.status(400).json({ message: "Nombre del curso disponible", disponible: true });
+                    }
+                }
+                return res.status(400).json({ message: "Nombre del curso no disponible", disponible: false });
+            } else {
+                console.log("No data available");
+                res.status(400).json({ message: "No hay cursos disponibles actualmente", });
+            }
+        })
+
+        
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+}
