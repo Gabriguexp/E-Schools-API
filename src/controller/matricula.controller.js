@@ -45,6 +45,58 @@ export const storeMatricula = async function(req, res){
 
 }
 
+export const storeFreeMatricula = async function(req, res){
+    try{
+        let idAlumno = req.body.idalumno;
+        let idCurso = req.body.idcurso
+        let nombreAlumno = req.body.nombreAlumno
+        let nombreCurso = req.body.nombreCurso
+        console.log('matriculando')
+        if ( (idAlumno == '' || idCurso == '') || (idAlumno == undefined || idCurso == undefined) ) {
+            res.status(401).json({ message: "Algún campo está vacio" });
+        } else {
+
+            console.log(new Date())
+            get(child(dbRef, 'curso/'+ id)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    //console.log(snapshot.val());
+                    let curso = snapshot.val()
+                    if(curso.precio == 0){
+                        const matricula = ref(db, 'matricula')
+                        const newMatricula = push(matricula)
+                        set(newMatricula, {
+                            idalumno : idAlumno, 
+                            idcurso: idCurso,
+                            activa: true,
+                            fechainicio: new Date().toLocaleString(),
+                            fechafin: '26/05/2030',
+                            nombreAlumno: nombreAlumno,
+                            nombreCurso: nombreCurso
+                        })
+                        res.status(200).json({ message: "matricula añadida" });
+                    } else {
+                        res.status(401).json({ message: "Error al añadir la matricula gratuita" });
+                    }
+
+
+
+                } else {
+                    console.log("No data available");
+                    res.status(200).json({ message: "No se ha encontrado el curso", });
+                }
+            })
+
+
+            
+        }
+    
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+
+}
+
 /*
 export const storeFreeMatricula = async function(req, res){
     try{
