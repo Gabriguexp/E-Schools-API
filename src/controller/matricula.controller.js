@@ -45,6 +45,93 @@ export const storeMatricula = async function(req, res){
 
 }
 
+export const storeFreeMatricula = async function(req, res){
+    try{
+        let idAlumno = req.body.idalumno;
+        let idCurso = req.body.idcurso
+        let nombreAlumno = req.body.nombreAlumno
+        let nombreCurso = req.body.nombreCurso
+        console.log('matriculando')
+        if ( (idAlumno == '' || idCurso == '') || (idAlumno == undefined || idCurso == undefined) ) {
+            res.status(401).json({ message: "Algún campo está vacio" });
+        } else {
+
+            console.log(new Date())
+            get(child(dbRef, 'curso/'+ id)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    //console.log(snapshot.val());
+                    let curso = snapshot.val()
+                    if(curso.precio == 0){
+                        const matricula = ref(db, 'matricula')
+                        const newMatricula = push(matricula)
+                        set(newMatricula, {
+                            idalumno : idAlumno, 
+                            idcurso: idCurso,
+                            activa: true,
+                            fechainicio: new Date().toLocaleString(),
+                            fechafin: '26/05/2030',
+                            nombreAlumno: nombreAlumno,
+                            nombreCurso: nombreCurso
+                        })
+                        res.status(200).json({ message: "matricula añadida" });
+                    } else {
+                        res.status(401).json({ message: "Error al añadir la matricula gratuita" });
+                    }
+
+
+
+                } else {
+                    console.log("No data available");
+                    res.status(200).json({ message: "No se ha encontrado el curso", });
+                }
+            })
+
+
+            
+        }
+    
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+
+}
+
+/*
+export const storeFreeMatricula = async function(req, res){
+    try{
+        let idAlumno = req.body.idalumno;
+        let idCurso = req.body.idcurso
+        let nombreAlumno = req.body.nombreAlumno
+        let nombreCurso = req.body.nombreCurso
+        console.log('matriculando')
+        if ( (idAlumno == '' || idCurso == '') || (idAlumno == undefined || idCurso == undefined) ) {
+            res.status(401).json({ message: "Algún campo está vacio" });
+        } else {
+
+            console.log(new Date())
+
+            const matricula = ref(db, 'matricula')
+            const newMatricula = push(matricula)
+            set(newMatricula, {
+                idalumno : idAlumno, 
+                idcurso: idCurso,
+                activa: true,
+                fechainicio: new Date().toLocaleString(),
+                fechafin: '26/05/2030',
+                nombreAlumno: nombreAlumno,
+                nombreCurso: nombreCurso
+            })
+            res.status(200).json({ message: "matricula añadida" });
+        }
+    
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+
+}
+*/
 
 
 export const indexMatricula = async function(req, res){
@@ -180,26 +267,30 @@ export const updateMatricula = async function(req, res){
 }
 
 export const createCheckoutSession = async (req, res) => {
-    let cursoPriceId = req.body.cursopriceid
-    const session = await stripe.checkout.sessions.create({
-      line_items: [
-        {
-          // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-          //price: 'price_1KydgOBMsQSe7vj6aFvVKN2G',
-          price: cursoPriceId,
-          quantity: 1,
-        },
-      ],
-      mode: 'payment',
-      success_url: `http://localhost:8080/#/curso/matriculapagada`,
-      cancel_url: `http://localhost:8080/#/curso/pagocancelado`,
-    });
-    console.log('session url')
-    console.log(session.url)
-    console.log('creando pago')
-    res.status(200).json({ message: "Redirigiendo", url: session.url });
-
-  }
+    try{
+        let cursoPriceId = req.body.cursopriceid
+        const session = await stripe.checkout.sessions.create({
+        line_items: [
+            {
+            // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+            //price: 'price_1KydgOBMsQSe7vj6aFvVKN2G',
+            price: cursoPriceId,
+            quantity: 1,
+            },
+        ],
+        mode: 'payment',
+        success_url: `http://localhost:8080/#/curso/matriculapagada`,
+        cancel_url: `http://localhost:8080/#/curso/pagocancelado`,
+        });
+        console.log('session url')
+        console.log(session.url)
+        console.log('creando pago')
+        res.status(200).json({ message: "Redirigiendo", url: session.url });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "An error occured" });
+    }
+}
 
 
 export const deleteMatricula = async function(req, res){

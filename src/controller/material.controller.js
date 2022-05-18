@@ -192,8 +192,6 @@ export const updateMaterial = async function(req, res){
                         visible : visible,
                     })
                 }
-                
-
                 res.status(200).json({ message: "material actualizado", });
             } else {
                 console.log("No data available");
@@ -255,7 +253,7 @@ import {unlink} from 'node:fs'
 
 export const deleteMaterial = async function(req, res){
     try{
-        let cursoid = req.body.cursoid;
+        let cursoid = req.body.curso;
         let materialid = req.body.materialid;
         let bloqueid = req.body.bloqueid;
         console.log('cursoid'+ cursoid)
@@ -304,7 +302,8 @@ export const checkUploadedTarea = async function(req, res){
                 
                 let nota = snapshot.val().nota
                 let comentario = snapshot.val().comentario
-                res.status(200).json({ message: "Tarea ya subida", entregada: true, nota: nota, comentario: comentario });
+                let filename = snapshot.val().file
+                res.status(200).json({ message: "Tarea ya subida", entregada: true, nota: nota, comentario: comentario, filename: filename });
             } else {
                 console.log("No data available for good ");
                 res.status(200).json({ message: "Tarea no subida", entregada: false });
