@@ -69,12 +69,15 @@ export const verifyProfesorToken = async (req, res, next) => {
                 
                     }
                     for(let i in usuario.cursos){
+                        console.log('curso: ' )
+                        console.log( usuario.cursos[i])
                         if( usuario.cursos[i].curso == curso){
                             next()
                             return
                         }
                     }
-                
+                    console.log(curso)
+                    console.log('waht')
                     return res.status(400).json({ message: "No eres profesor de este curso", });        
                 }else {
                     return res.status(400).json({ message: "Ruta solo disponible para profesor", });    
