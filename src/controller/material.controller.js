@@ -192,8 +192,6 @@ export const updateMaterial = async function(req, res){
                         visible : visible,
                     })
                 }
-                
-
                 res.status(200).json({ message: "material actualizado", });
             } else {
                 console.log("No data available");
@@ -255,7 +253,7 @@ import {unlink} from 'node:fs'
 
 export const deleteMaterial = async function(req, res){
     try{
-        let cursoid = req.body.cursoid;
+        let cursoid = req.body.curso;
         let materialid = req.body.materialid;
         let bloqueid = req.body.bloqueid;
         console.log('cursoid'+ cursoid)

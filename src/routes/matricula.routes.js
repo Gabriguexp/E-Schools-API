@@ -6,8 +6,9 @@ import * as authMiddleware from '../middleware/auth.middleware.js'
 
 router.post('/store', authMiddleware.verifyAdminToken, matriculaController.storeMatricula)
 
-router.get('/index', authMiddleware.verifyToken, matriculaController.indexMatricula)
+router.post('/storeFree', authMiddleware.verifyToken, matriculaController.storeMatricula)
 
+router.get('/index', authMiddleware.verifyToken, matriculaController.indexMatricula)
 
 router.get('/:matriculaid', authMiddleware.verifyToken, matriculaController.getMatriculaById)
 

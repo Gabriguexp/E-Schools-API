@@ -5,11 +5,7 @@ import * as authMiddleware from '../middleware/auth.middleware.js'
 
 router.post('/store', materialController.storeMaterial)
 
-//router.post('/test', materialController.test)
-
-//router.get('/index', materialController.indexMaterial)
-
-router.get('/:cursoid/bloques', materialController.getBloques)
+router.get('/:cursoid/bloques', authMiddleware.verifyToken, materialController.getBloques)
 
 router.get('/checkuploadedtarea/:userid/:tareaid', materialController.checkUploadedTarea)
 
