@@ -23,7 +23,7 @@ router.post('/disableUser', authMiddleware.verifyAdminToken, UserController.disa
 
 router.post('/enableUser', authMiddleware.verifyAdminToken, UserController.enableUser)
 
-router.post('/resetPassword', UserController.resetPassword)
+router.post('/resetPassword', authMiddleware.verifyToken, UserController.resetPassword)
 
 router.post('/addcursotoprofesor', authMiddleware.verifyAdminToken, UserController.addCursoToProfesor)
 
