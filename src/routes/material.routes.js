@@ -17,8 +17,8 @@ router.put('/:cursoid/:materialid', authMiddleware.verifyProfesorToken, material
 
 router.put('/:cursoid/:bloqueid/:materialid', authMiddleware.verifyProfesorToken, materialController.updateMaterialFromBloque)
 
-router.post('/deletematerial', authMiddleware.verifyProfesorToken,materialController.deleteMaterial)
+router.post('/:cursoid/:bloqueid/:materialid', authMiddleware.verifyProfesorToken,materialController.deleteMaterial)
 
-router.post('/uploadTarea',  authMiddleware.verifyToken,materialController.uploadTarea)
+
 
 export default router;
