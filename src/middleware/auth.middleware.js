@@ -18,9 +18,7 @@ const adminAuth = admin.auth()
 export const verifyToken = async (req, res, next) => {
     try {
         let idToken = req.headers['x-access-token'];
-
    //     console.log('idtoken: ' + idToken)
-
         adminAuth
         .verifyIdToken(idToken, false)
         .then((decodedToken) => {

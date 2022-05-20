@@ -7,4 +7,6 @@ router.get('/getTareasEntregadas/:idtarea', tareaController.getTareasEntregadas)
 
 router.post('/calificarTarea/', tareaController.calificarTarea)
 
+router.post('/uploadTarea',  authMiddleware.verifyToken,tareaController.uploadTarea)
+
 export default router;

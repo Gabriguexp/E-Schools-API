@@ -316,33 +316,3 @@ export const checkUploadedTarea = async function(req, res){
 
 }
 
-export const uploadTarea = async function(req, res){
-    try{
-        let tarea = req.body.tarea
-        let userid = req.body.userid
-        let file = req.files.entrega;
-
-        file.mv('public/public/usuarios/'+ userid +'/'+ tarea + '/' +file.name, true, function(err) {
-            console.log('moving file')
-            if (err){
-                console.log('error subiendo archivo')
-                console.log(err)
-                return res.status(500).send(err);
-            }
-
-        })
-
-        console.log('tarea: ' + tarea)
-        console.log('file: ' + file.name)
-        set(ref(db, 'users/' + userid + '/entrega/' + tarea), {
-            tarea : tarea, 
-            file: file.name,
-            nota: -1,
-            comentario : '',
-        })
-        res.status(200).json({ message: "Tarea subida" });
-    } catch (error) {
-        console.log(error);
-        res.status(400).json({ message: "An error occured" });
-    }
-}

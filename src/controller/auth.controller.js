@@ -18,37 +18,8 @@ export const login = async function(req, res){
           async (result) => {
               console.log(result)
               console.log(result.user.email)
-              //const auth = getAuth();
-
               checkUser(email, res)
               return
-              //res.status(200).json({ message: "Inicio de sesión correcto" });
-              /*let usuario = await getUserByEmail(result.user.email).then(function(){
-                console.log('usuario....')
-                console.log(usuario)
-                console.log('asdf')
-                console.log(usuario[1].activo)
-                res.status(200).json({ message: "Inicio de sesión correcto" });
-              }).catch(function(){
-
-              })*/
-              
-              /*onAuthStateChanged(auth, (user) => {
-                if (user) {
-                  // User is signed in, see docs for a list of available properties
-                  // https://firebase.google.com/docs/reference/js/firebase.User
-                  const uid = user.uid;
-                  
-
-                  console.log('uid: '+ uid)
-                  // ...
-                } else {
-                  // User is signed out
-                  // ...
-                }
-              });*/
-
-              //res.status(200).json({ message: "Inicio de sesión correcto" });
           },
           function (error) {
             console.log(error);
@@ -65,30 +36,35 @@ export const register =  async function(req, res){
     try {
         let email = req.body.email;
         let password = req.body.password;
+        let rePass = req.body.repassword
         let nombre = req.body.nombre;
         let apellidos = req.body.apellidos;
         //Comprobar datos de register y si esta todo ok almacenarlo.
 
-        if (emailRegex.test(email) && password.length >=6 && nombre != '' && apellidos != ''){
-          await createUserWithEmailAndPassword(auth, email, password).then(
-            async (result) => {
-                let userId = result.user.uid
-                const db = getDatabase();
-                set(ref(db, 'users/' + userId), {
-                  nombre : nombre, 
-                  apellidos : apellidos,
-                  email: email,
-                  rol: 'alumno',
-                  activo: true,
-                });
-
-                res.status(200).json({ message: "Registro correcto" });
-            },
-            function (error) {
-              console.log(error);
-              res.status(401).json({ message: "Registro incorrecto" });
-            }
-          );
+        if (emailRegex.test(email) && password.length >=6 && nombre != '' && apellidos != '' ){
+          if(password == rePass){
+            await createUserWithEmailAndPassword(auth, email, password).then(
+              async (result) => {
+                  let userId = result.user.uid
+                  const db = getDatabase();
+                  set(ref(db, 'users/' + userId), {
+                    nombre : nombre, 
+                    apellidos : apellidos,
+                    email: email,
+                    rol: 'alumno',
+                    activo: true,
+                  });
+  
+                  res.status(200).json({ message: "Registro correcto" });
+              },
+              function (error) {
+                console.log(error);
+                res.status(401).json({ message: "Registro incorrecto" });
+              }
+            );
+          } else {
+            res.status(400).json({ message: "Las contraseñas no coinciden" });
+          }
         } else {
             res.status(401).json({ message: "Faltan datos en el registro" });
         }
