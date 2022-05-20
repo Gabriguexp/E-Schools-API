@@ -301,8 +301,8 @@ export const checkUploadedTarea = async function(req, res){
             if (snapshot.exists()) {
                 
                 let nota = snapshot.val().nota
-                let comentario = snapshot.val().comentario
                 let filename = snapshot.val().file
+                let comentario = snapshot.val().comentario
                 res.status(200).json({ message: "Tarea ya subida", entregada: true, nota: nota, comentario: comentario, filename: filename });
             } else {
                 console.log("No data available for good ");
