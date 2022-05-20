@@ -156,6 +156,28 @@ export const getUserById = async function(req, res){
     }
 }
 
+export const getExamenById = async function(req, res){
+    try{
+        let userid = req.params.userid;
+        let examenid = req.params.examenid;
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'users/'+ userid + '/realizado/'+ examenid )).then((snapshot) => {
+            if (snapshot.exists()) {
+                //console.log(snapshot.val());
+                let examen = snapshot.val()
+                res.status(200).json({ message: "Devolviendo examen enviado", examen: examen });
+            } else {
+                console.log("No data available");
+                res.status(200).json({ message: "No se ha encontrado el examen enviado", });
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+}
+
+
 export const getAlumnoById = async function(id){
     try{
         const dbRef = ref(getDatabase());
