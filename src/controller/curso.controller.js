@@ -77,6 +77,26 @@ export const getCursoById = async function(req, res){
         res.status(400).json({ message: "An error occured" });
     }
 }
+export const getExamenById = async function(req, res){
+    try{
+        let id = req.params.examenid;
+        let idcurso = req.params.cursoid;
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'curso/'+ idcurso +'/examen/'+ id)).then((snapshot) => {
+            if (snapshot.exists()) {
+                //console.log(snapshot.val());
+                let examen = snapshot.val()
+                res.status(200).json({ message: "Devolviendo examen", examen: examen });
+            } else {
+                console.log("No data available");
+                res.status(200).json({ message: "No se ha encontrado el examen", id: id});
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+}
 
 export const updateCurso = async function(req, res){
     try{
