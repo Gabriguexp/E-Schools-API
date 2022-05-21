@@ -14,7 +14,7 @@ router.get('/:cursoid', authMiddleware.verifyToken, cursoController.getCursoById
 
 router.put('/:cursoid', authMiddleware.verifyAdminToken, cursoController.updateCurso)
 
-router.get('/:cursoid/examen/:examenid', authMiddleware.verifyToken, examenController.getExamenById)
+router.get('/:cursoid/examen/:examenid', examenController.getExamenById)
 
 router.put('/:cursoid/examen/:examenid', authMiddleware.verifyProfesorToken, examenController.updateExamen)
 
