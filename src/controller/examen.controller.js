@@ -5,6 +5,7 @@ import firebaseApp from '../database.js';
 
 const db = getDatabase();
 
+
 export const storeExamen = async function(req, res){
     try{
         let titulo = req.body.titulo;
@@ -62,9 +63,10 @@ export const getExamenById = async function(req, res){
             if (snapshot.exists()) {
                 //console.log(snapshot.val());
                 let examen = snapshot.val()
+                console.log("df");
                 res.status(200).json({ message: "Devolviendo examen", examen: examen });
             } else {
-                console.log("No data available");
+                console.log("No data available + df");
                 res.status(200).json({ message: "No se ha encontrado el examen", id: id});
             }
         })
@@ -190,6 +192,153 @@ export const uploadExamen = async function(req, res){
         })
         res.status(200).json({ message: "Examen realizado" });
     } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+}
+
+export const uploadComentario = async function(req, res){
+    try{
+        let comentario = req.body.comentario;
+        let examen = req.body.examen;
+        let userid = req.body.iduser;
+
+
+        console.log('examen: ' + examen)
+        console.log('jkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalks');
+        const examenRealizado = ref(db, 'users/' + userid + '/realizado/' + examen);
+                
+        update(examenRealizado, {
+            comentario : comentario,
+        })
+        res.status(200).json({ message: "Comentario guardado" });
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+}
+
+export const getExamenesRealizados =  async function(req, res){
+    try{
+        console.log('a s d f')
+        let examenid = req.params.idexamen
+        
+        let usuarios = {}
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'users')).then((snapshot) => {
+            if (snapshot.exists()) {
+                console.log(snapshot.val());
+                usuarios = snapshot.val()
+                let estudiantes = []
+                for(var i in usuarios){   
+                    if(usuarios[i].realizado != undefined){
+                        if(usuarios[i].realizado[examenid] != undefined){
+                            console.log('-----------')
+                            console.log(usuarios[i].realizado[examenid])
+                            estudiantes.push([i, usuarios[i]])
+                            console.log('-----------')   
+                        }
+                    }
+                }
+                for(let i = 0; i < usuarios.length; i++){
+                    console.log('-----')
+                    console.log(i)
+                    console.log('-----')
+                }   
+                
+                res.status(200).json({ message: "Devolviendo usuarios que han realizado el examen", usuarios: estudiantes });
+            } else {
+                console.log("No data available");
+                res.status(200).json({ message: "No hay usuarios actualmente", });
+            }
+        })
+    }catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+}
+
+export const getExamenesNoRealizados =  async function(req, res){
+    try{
+        console.log('a s d')
+        let cursoid = req.params.idcurso
+        let examenid = req.params.idexamen
+        
+        let usuarios = []
+        let usuarios2 = {}
+        let matriculas = {}
+        let estudiantes = []
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'matricula')).then((snapshot) => {
+            if (snapshot.exists()) {
+                console.log(snapshot.val());
+                matriculas = snapshot.val()
+                for(var i in matriculas){   
+                    if(matriculas[i].idcurso == cursoid){
+                        console.log('-----------')
+                        console.log(matriculas[i].idcurso)
+                        usuarios.push(matriculas[i].idalumno)
+                        console.log('-----------')   
+                    }
+                }
+            }
+        })
+        let booleano = false;
+        get(child(dbRef, 'users')).then((snapshot) => {
+            if (snapshot.exists()) {
+                console.log(snapshot.val());
+                usuarios2 = snapshot.val()
+                
+                for(var i in usuarios2){   
+                    for(var j in usuarios){
+                        booleano = false;
+                        
+                        if(usuarios[j]==i){
+                            console.log(' ajsnd' + usuarios2[i].realizado);
+                            if(usuarios2[i].realizado == undefined){
+                                console.log('-----------')
+                                for(var l in estudiantes){
+                                    if(estudiantes[l][0]== i){
+                                        booleano = true;
+                                    }
+                                }
+                                console.log(booleano);
+                                if(booleano == false){
+                                    estudiantes.push([i, usuarios2[i]])
+                                }
+                                console.log('-----------')   
+                            }else if(usuarios2[i].realizado[examenid] == '' || usuarios2[i].realizado[examenid] == undefined ){
+                                console.log(examenid);
+                                console.log(usuarios2[i].realizado[examenid])
+                                console.log('-----------')
+                                
+                                for(var l in estudiantes){
+                                    if(estudiantes[l][0]== i){
+                                        booleano = true;
+                                    }
+                                }
+                                console.log(booleano);
+                                if(booleano == false){
+                                    estudiantes.push([i, usuarios2[i]])
+                                }
+                                console.log('-----------')   
+                            }
+                        }
+                    }
+                }
+                for(let i = 0; i < usuarios2.length; i++){
+                    console.log('-----')
+                    console.log(i)
+                    console.log('-----')
+                }   
+                
+                res.status(200).json({ message: "Devolviendo usuarios que no han realizado el examen", usuarios: estudiantes });
+            } else {
+                console.log("No data available");
+                res.status(200).json({ message: "Todos los usuarios han realizado el examen", });
+            }
+        })
+    }catch (error) {
         console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
