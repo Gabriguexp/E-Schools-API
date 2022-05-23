@@ -3,6 +3,8 @@ const router = Router();
 import * as examenController from '../controller/examen.controller.js'
 import * as authMiddleware from '../middleware/auth.middleware.js'
 
+router.post('/deleteexamen', authMiddleware.verifyProfesorToken, examenController.deleteExamen)
+
 router.get('/getExamenesRealizado/:idexamen', authMiddleware.verifyToken, examenController.getExamenesRealizados)
 
 router.post('/store', authMiddleware.verifyProfesorToken, examenController.storeExamen)
@@ -22,8 +24,7 @@ router.post('/uploadComentario', authMiddleware.verifyToken, examenController.up
 
 router.get('/getExamenesNoRealizado/:idcurso/:idexamen', authMiddleware.verifyToken, examenController.getExamenesNoRealizados)
 
-/*
-router.delete('/:examenid', examenController.deleteExamen)
-*/
+
+
 
 export default router;

@@ -112,27 +112,31 @@ export const updateExamen = async function(req, res){
     }
 }
 
-// export const deleteExamen = async function(req, res){
-//     try{
-//         let id = req.params.cursoid;
-//         const dbRef = ref(getDatabase());
-//         get(child(dbRef, 'curso/'+ id)).then((snapshot) => {
-//             if (snapshot.exists()) {
+export const deleteExamen = async function(req, res){
+    try{
+        console.log('aslopnkf');
+        let cursoid = req.body.curso;
+        let examenid = req.body.examenid;
+        console.log('cursoid'+ cursoid)
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'curso/'+ cursoid+'/examen/'+ examenid)).then((snapshot) => {
+            
+            if (snapshot.exists()) {
+                console.log('DELETE')
+                remove(ref(db, 'curso/'+ cursoid+'/examen/'+ examenid))
+                res.status(200).json({ message: "Examen borrado.", });
 
-//                 const curso = ref(db, 'curso/'+id)
-//                 remove(curso)
-//                 res.status(200).json({ message: "Curso borrado.", });
-
-//             } else {
-//                 console.log("No data available");
-//                 res.status(401).json({ message: "No se ha encontrado el curso", });
-//             }
-//         })
-//     } catch (error) {
-//         console.log(error);
-//         res.status(400).json({ message: "An error occured" });
-//     }
-// }
+            } else {
+                console.log("No data available");
+                res.status(401).json({ message: "No se ha encontrado el examen", });
+            }
+        })
+        
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+}
 
 export const checkUploadedExamen = async function(req, res){
     try{
