@@ -41,7 +41,8 @@ export const verifyProfesorToken = async (req, res, next) => {
     try {
         let idToken = req.headers['x-access-token'];
     //    console.log('verificando PROFESOR TOKEN')
-    //    console.log(idToken)
+       console.log(idToken)
+
         adminAuth
         .verifyIdToken(idToken, false)
         .then((decodedToken) => {
@@ -90,6 +91,7 @@ export const verifyProfesorToken = async (req, res, next) => {
             return res.status(403).json({message: 'Authentiation failed'});
         });
     } catch (error) {
+        console.log(error)
         console.log('asdf autenticacion failed')
         return res.status(401).json({message: 'Authentication failed'});
     }
