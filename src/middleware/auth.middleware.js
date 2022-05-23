@@ -59,13 +59,9 @@ export const verifyProfesorToken = async (req, res, next) => {
                 if (usuario.rol == 'Administrador'){
                     next()
                 }else if(usuario.rol == 'profesor'){
-                
                     let curso = req.body.curso
-                
                     if (curso == undefined || curso == ''){
-                
                         curso = req.params.cursoid
-                
                     }
                     for(let i in usuario.cursos){
                         console.log('curso: ' )
