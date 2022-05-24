@@ -58,6 +58,8 @@ export const getExamenById = async function(req, res){
     try{
         let id = req.params.examenid;
         let idcurso = req.params.cursoid;
+        console.log('id:' + id)
+        console.log('idcurso:' + idcurso)
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'curso/'+ idcurso +'/examen/'+ id)).then((snapshot) => {
             if (snapshot.exists()) {

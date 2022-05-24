@@ -177,11 +177,9 @@ export const verifyName = async function(req, res){
                 return res.status(200).json({ message: "Nombre del curso disponible", disponible: true });
             } else {
                 console.log("No data available");
-                res.status(400).json({ message: "No hay cursos disponibles actualmente", });
+                res.status(200).json({ message: "No hay cursos disponibles actualmente", });
             }
         })
-
-        
     } catch (error) {
         console.log(error);
         res.status(400).json({ message: "An error occured" });
