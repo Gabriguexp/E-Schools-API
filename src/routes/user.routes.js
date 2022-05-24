@@ -27,8 +27,6 @@ router.post('/resetPassword', authMiddleware.verifyToken, UserController.resetPa
 
 router.post('/addcursotoprofesor', authMiddleware.verifyAdminToken, UserController.addCursoToProfesor)
 
-router.get('/:userid', authMiddleware.verifyToken, UserController.getUserById)
-
 router.get('/:userid/realizado/:examenid', authMiddleware.verifyToken, UserController.getExamenById)
 
 

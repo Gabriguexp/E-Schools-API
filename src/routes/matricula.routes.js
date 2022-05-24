@@ -15,10 +15,9 @@ router.get('/getmatriculabyuser/:userid', authMiddleware.verifyToken, matriculaC
 
 router.put('/:matriculaid', authMiddleware.verifyAdminToken, matriculaController.updateMatricula)
 
+router.post('/create-checkout-session', authMiddleware.verifyToken, matriculaController.createCheckoutSession);
+
 /*
 router.delete('/:matriculaid', matriculaController.deleteMatricula)
 */
-
-router.post('/create-checkout-session', authMiddleware.verifyToken, matriculaController.createCheckoutSession);
-
 export default router;
