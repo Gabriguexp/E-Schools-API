@@ -13,12 +13,12 @@ export const storeMatricula = async function(req, res){
         let idCurso = req.body.idcurso
         let nombreAlumno = req.body.nombreAlumno
         let nombreCurso = req.body.nombreCurso
-        console.log('matriculando')
+        //console.log('matriculando')
         if ( (idAlumno == '' || idCurso == '') || (idAlumno == undefined || idCurso == undefined) ) {
             res.status(401).json({ message: "Algún campo está vacio" });
         } else {
 
-            console.log(new Date())
+            //console.log(new Date())
 
             const matricula = ref(db, 'matricula')
             const newMatricula = push(matricula)
@@ -35,7 +35,7 @@ export const storeMatricula = async function(req, res){
         }
     
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 
@@ -47,15 +47,15 @@ export const storeFreeMatricula = async function(req, res){
         let idCurso = req.body.idcurso
         let nombreAlumno = req.body.nombreAlumno
         let nombreCurso = req.body.nombreCurso
-        console.log('matriculando')
+        //console.log('matriculando')
         if ( (idAlumno == '' || idCurso == '') || (idAlumno == undefined || idCurso == undefined) ) {
             res.status(401).json({ message: "Algún campo está vacio" });
         } else {
 
-            console.log(new Date())
+            //console.log(new Date())
             get(child(dbRef, 'curso/'+ id)).then((snapshot) => {
                 if (snapshot.exists()) {
-                    //console.log(snapshot.val());
+                    ////console.log(snapshot.val());
                     let curso = snapshot.val()
                     if(curso.precio == 0){
                         const matricula = ref(db, 'matricula')
@@ -77,7 +77,7 @@ export const storeFreeMatricula = async function(req, res){
 
 
                 } else {
-                    console.log("No data available");
+                    //console.log("No data available");
                     res.status(200).json({ message: "No se ha encontrado el curso", });
                 }
             })
@@ -87,7 +87,7 @@ export const storeFreeMatricula = async function(req, res){
         }
     
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 
@@ -99,79 +99,79 @@ export const indexMatricula = async function(req, res){
         const dbRef = ref(getDatabase());
         let nombreAlumno = '';
         
-        console.log(nombreAlumno);
+        //console.log(nombreAlumno);
         get(child(dbRef, 'matricula')).then((snapshot) => {
             if (snapshot.exists()) {
-                console.log(snapshot.val());
+                //console.log(snapshot.val());
                 matricula = snapshot.val();
                 
-                // console.log(matricula);
+                // //console.log(matricula);
                 
                 res.status(200).json({ message: "Devolviendo matricula", matricula: matricula });
             } else {
-                console.log("No data available");
+                //console.log("No data available");
                 res.status(200).json({ message: "No hay matricula disponibles actualmente", });
             }
         })
         for(var i in matricula){
             var idAlumno = matricula[i].idalumno;
             get(child(dbRef, 'users/'+ idAlumno)).then((snapshot2) => {
-                console.log(idAlumno);
+                //console.log(idAlumno);
                 if (snapshot2.exists()) {
-                    //console.log(snapshot.val());
+                    ////console.log(snapshot.val());
                     let usuario = snapshot2.val();
                     nombreAlumno= usuario.nombre;
                 } else {
-                    // console.log(snapshot2);
-                    console.log("No data available");
+                    // //console.log(snapshot2);
+                    //console.log("No data available");
                     nombreAlumno= 'No hay';
                 }
             })
             // let nombreAlumno = UserController.getAlumnoById(i);
 
-            console.log(nombreAlumno);
+            //console.log(nombreAlumno);
         }
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
 
 export const getMatriculaById = async function(req, res){
-    console.log('getmatriculabyid')
+    //console.log('getmatriculabyid')
     try{
         let id = req.params.matriculaid;
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'matricula/'+ id)).then((snapshot) => {
             if (snapshot.exists()) {
-                //console.log(snapshot.val());
+                ////console.log(snapshot.val());
                 let matricula = snapshot.val()
                 res.status(200).json({ message: "Devolviendo matricula", matricula: matricula });
             } else {
-                console.log("No data available");
+                //console.log("No data available");
                 res.status(200).json({ message: "No se ha encontrado la matricula", });
             }
         })
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
 
 export const getMatriculaByUser = async function(req, res){
     try{
-        console.log('getmatriculabyuser')
+        //console.log('getmatriculabyuser')
         let id = req.params.userid;
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'matricula')).then((snapshot) => {
             if (snapshot.exists()) {
                 
-                console.log(snapshot.val());
+                //console.log(snapshot.val());
                 let matricula = snapshot.val()
                 let matriculas = []
                 for(var i in matricula){
-                    console.log('matricula id alumno: ' + matricula[i].idalumno)
-                    console.log('this id ' + id)
+                    //console.log('matricula id alumno: ' + matricula[i].idalumno)
+                    //console.log('this id ' + id)
                     if (matricula[i].idalumno == id){
                         matriculas.push(matricula[i])
                     }
@@ -182,12 +182,12 @@ export const getMatriculaByUser = async function(req, res){
                     res.status(200).json({ message: "El usuario no tiene matriculas", matricula: [] });    
                 }
             } else {
-                console.log("No data available");
+                //console.log("No data available");
                 res.status(200).json({ message: "El usuario no tiene matriculas", matricula: [] });
             }
         })
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
@@ -204,7 +204,7 @@ export const updateMatricula = async function(req, res){
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'matricula/'+ id)).then((snapshot) => {
             if (snapshot.exists()) {
-                //console.log(snapshot.val());
+                ////console.log(snapshot.val());
                 const matricula = ref(db, 'matricula/'+id)
                 update(matricula, {
                     idalumno: idalumno,
@@ -215,12 +215,12 @@ export const updateMatricula = async function(req, res){
                 })
                 res.status(200).json({ message: "Matricula actualizada", });
             } else {
-                console.log("No data available");
+                //console.log("No data available");
                 res.status(401).json({ message: "No se ha encontrado la matricula", });
             }
         })
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
@@ -241,12 +241,12 @@ export const createCheckoutSession = async (req, res) => {
         success_url: `http://localhost:8080/#/curso/matriculapagada`,
         cancel_url: `http://localhost:8080/#/curso/pagocancelado`,
         });
-        console.log('session url')
-        console.log(session.url)
-        console.log('creando pago')
+        //console.log('session url')
+        //console.log(session.url)
+        //console.log('creando pago')
         res.status(200).json({ message: "Redirigiendo", url: session.url });
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(500).json({ message: "An error occured" });
     }
 }
@@ -264,12 +264,12 @@ export const deleteMatricula = async function(req, res){
                 res.status(200).json({ message: "Matricula borrado.", });
 
             } else {
-                console.log("No data available");
+                //console.log("No data available");
                 res.status(401).json({ message: "No se ha encontrado la matricula", });
             }
         })
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }

@@ -11,23 +11,23 @@ const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 const database = getDatabase();
 export const login = async function(req, res){
     try {
-        console.log(req.body)
+        //console.log(req.body)
         let email = req.body.email;
         let password = req.body.password;
         await signInWithEmailAndPassword(auth, email, password).then(
           async (result) => {
-              console.log(result)
-              console.log(result.user.email)
+              //console.log(result)
+              //console.log(result.user.email)
               checkUser(email, res)
               return
           },
           function (error) {
-            console.log(error);
+            //console.log(error);
             res.status(401).json({ message: "Datos de inicio de sesión incorrectos" });
           }
         );
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
@@ -58,7 +58,7 @@ export const register =  async function(req, res){
                   res.status(200).json({ message: "Registro correcto" });
               },
               function (error) {
-                console.log(error);
+                //console.log(error);
                 res.status(401).json({ message: "Registro incorrecto" });
               }
             );
@@ -70,7 +70,7 @@ export const register =  async function(req, res){
         }
 
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
@@ -84,7 +84,7 @@ export const registerProfesor = async function(req, res){
         let nombre = req.body.nombre;
         let apellidos = req.body.apellidos;
         let tokenRegistro = req.body.tokenRegistro
-        console.log('token registro' + tokenRegistro)
+        //console.log('token registro' + tokenRegistro)
         //Comprobar datos de register y si esta todo ok almacenarlo.
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'invitacion/'+tokenRegistro)).then((snapshot) => {
@@ -116,7 +116,7 @@ export const registerProfesor = async function(req, res){
                     return
                 },
                 function (error) {
-                  console.log(error);
+                  //console.log(error);
                   res.status(401).json({ message: "Registro incorrecto" });
                   return
                 }
@@ -126,45 +126,45 @@ export const registerProfesor = async function(req, res){
               return
             }
           } else {
-              console.log("No data available");
+              //console.log("No data available");
               res.status(400).json({ message: "La invitación no existe o ha caducado, contacte con el administrador", });
               return
           }
         })
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
         return
     }
 }
 
 function checkUser(email, res){
-  console.log('getuserbyid')
+  //console.log('getuserbyid')
   try{
     let usuarios = {}
     const dbRef = ref(getDatabase());
     get(child(dbRef, 'users')).then((snapshot) => {
         if (snapshot.exists()) {
-            //console.log(snapshot.val());
+            ////console.log(snapshot.val());
             usuarios = snapshot.val()
             for(var i in usuarios){                    
                 if (usuarios[i].email == email){
-                  console.log('lo encontre')
-                  console.log(i, usuarios[i])
-                  console.log('activo: ' + usuarios[i].activo)
+                  //console.log('lo encontre')
+                  //console.log(i, usuarios[i])
+                  //console.log('activo: ' + usuarios[i].activo)
                   if (usuarios[i].activo || usuarios[i].activo == undefined){
                     //const auth = getAuth();
-                    console.log('auth.currentuser')
+                    //console.log('auth.currentuser')
                     //EL TOKEN!
                     //auth.currentUser.stsTokenManager.accessToken
                     let token = auth.currentUser.stsTokenManager.accessToken
-                    console.log(token)
+                    //console.log(token)
                     res.status(200).json({ message: "Login correcto", token: token  });
 
                   }else {
                     
                     signOut(auth).then(() => {
-                      console.log('cerrando sesion al usuario por espabilao')
+                      //console.log('cerrando sesion al usuario por espabilao')
                       // Sign-out successful.
                     }).catch((error) => {
                       // An error happened.
@@ -184,7 +184,7 @@ function checkUser(email, res){
         }
     })
   }catch (error) {
-      console.log(error);
+      //console.log(error);
       return error
   }
 }
@@ -204,19 +204,19 @@ export const checkUserLogged = async (req, res) => {
             usuario = snapshot.val()
             return res.status(200).json({message: 'Authentication ok', user: usuario, uid: id});
           } else {
-            console.log("No data available");
+            //console.log("No data available");
             return res.status(200).json({message: 'Authentication ok', user: ''});
             
           }
       })
-      console.log('a')
+      //console.log('a')
       
     
     })
     .catch((error) => {
     
         // Handle error
-        console.log('b')
+        //console.log('b')
         return res.status(403).json({message: 'Authentiation failed'});
     });
   } catch (error) {
@@ -228,12 +228,12 @@ export const checkUserLogged = async (req, res) => {
 export const logout = async(req, res )  => {
   try {
     signOut(auth).then(() => {
-      console.log('cerrando sesion al usuario')
+      //console.log('cerrando sesion al usuario')
       // Sign-out successful.
       return res.status(200).json({message: 'Logout'});
     }).catch((error) => {
-      console.log('error cerrando sesion')
-      console.log(error)
+      //console.log('error cerrando sesion')
+      //console.log(error)
       return res.status(401).json({message: 'Error al cerrar sesión'});
       // An error happened.
     });
@@ -244,14 +244,14 @@ export const logout = async(req, res )  => {
 
 export const inviteUser = async function(req, res ){
   let email = req.body.email
-  console.log('email invite user: ' + email)
+  //console.log('email invite user: ' + email)
   let enlace = 'http://localhost:8080/#/auth/registerProfesor/' 
   //Añadir token
   
   //let token = '1234'
   let token = createInviteToken()
-  console.log('el token de invite es: ')
-  console.log(token)
+  //console.log('el token de invite es: ')
+  //console.log(token)
   
     set(ref(database, 'invitacion/'+token), {
       email: email,
@@ -269,10 +269,10 @@ export const inviteUser = async function(req, res ){
   };
   transporter.sendMail(mailOptions, function(error, info){
     if (error) {
-        console.log('error enviando email');  
-      console.log(error);
+        //console.log('error enviando email');  
+      //console.log(error);
     } else {
-      console.log('Email sent: ' + info.response);
+      //console.log('Email sent: ' + info.response);
     }
   });
   
@@ -288,7 +288,7 @@ export const getInvitacion = async function(req, res){
       let email = snapshot.val().email
       res.status(200).json({ message: "devolviendo invitacion", email: email });
     } else {
-        console.log("No data available");
+        //console.log("No data available");
         res.status(400).json({ message: "La invitación no existe o ha caducado, contacte con el administrador", });
         return
     }
@@ -298,7 +298,7 @@ export const getInvitacion = async function(req, res){
 function createInviteToken(){
   let s = ""
   let cad = "qwertyuiopñlkjhgfdsazxcvbnmQWERTYUIOPÑLKJHGFDSAZXCVBNM1234567890"
-  console.log('cad lengthes: '+ cad.length)
+  //console.log('cad lengthes: '+ cad.length)
   for(let i = 0; i < 20; i++){
     let ind = Math.floor(Math.random() * 64);
     s+= cad.charAt(ind)
