@@ -27,7 +27,7 @@ export const storeExamen = async function(req, res){
         }
     
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 
@@ -40,16 +40,16 @@ export const indexExamen = async function(req, res){
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'curso/'+ id +'/examen')).then((snapshot) => {
             if (snapshot.exists()) {
-                //console.log(snapshot.val());
+                ////console.log(snapshot.val());
                 examen = snapshot.val()
                 res.status(200).json({ message: "Devolviendo examenes", examen: examen });
             } else {
-                console.log("No data available");
+                //console.log("No data available");
                 res.status(200).json({ message: "No hay examenes disponibles actualmente para este curso", });
             }
         })
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
@@ -58,22 +58,22 @@ export const getExamenById = async function(req, res){
     try{
         let id = req.params.examenid;
         let idcurso = req.params.cursoid;
-        console.log('id:' + id)
-        console.log('idcurso:' + idcurso)
+        //console.log('id:' + id)
+        //console.log('idcurso:' + idcurso)
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'curso/'+ idcurso +'/examen/'+ id)).then((snapshot) => {
             if (snapshot.exists()) {
-                //console.log(snapshot.val());
+                ////console.log(snapshot.val());
                 let examen = snapshot.val()
-                console.log("df");
+                //console.log("df");
                 res.status(200).json({ message: "Devolviendo examen", examen: examen });
             } else {
-                console.log("No data available + df");
+                //console.log("No data available + df");
                 res.status(200).json({ message: "No se ha encontrado el examen", id: id});
             }
         })
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
@@ -89,7 +89,7 @@ export const updateExamen = async function(req, res){
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'curso/'+ idcurso +'/examen/'+ id)).then((snapshot) => {
             if (snapshot.exists()) {
-                //console.log(snapshot.val());
+                ////console.log(snapshot.val());
                 const curso = ref(db, 'curso/'+ idcurso +'/examen/'+ id)
                 
                 update(curso, {
@@ -100,7 +100,7 @@ export const updateExamen = async function(req, res){
 
                 res.status(200).json({ message: "examen actualizado", });
             } else {
-                console.log("No data available");
+                //console.log("No data available");
                 res.status(401).json({ message: "No se ha encontrado el examen", });
             }
         })
@@ -109,33 +109,33 @@ export const updateExamen = async function(req, res){
 
         
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
 
 export const deleteExamen = async function(req, res){
     try{
-        console.log('aslopnkf');
+        //console.log('aslopnkf');
         let cursoid = req.body.curso;
         let examenid = req.body.examenid;
-        console.log('cursoid'+ cursoid)
+        //console.log('cursoid'+ cursoid)
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'curso/'+ cursoid+'/examen/'+ examenid)).then((snapshot) => {
             
             if (snapshot.exists()) {
-                console.log('DELETE')
+                //console.log('DELETE')
                 remove(ref(db, 'curso/'+ cursoid+'/examen/'+ examenid))
                 res.status(200).json({ message: "Examen borrado.", });
 
             } else {
-                console.log("No data available");
+                //console.log("No data available");
                 res.status(401).json({ message: "No se ha encontrado el examen", });
             }
         })
         
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
@@ -152,12 +152,12 @@ export const checkUploadedExamen = async function(req, res){
                 let comentario = snapshot.val().comentario
                 res.status(200).json({ message: "examen ya realizada", realizado: true, nota: nota, comentario: comentario});
             } else {
-                console.log("No data available for good ");
+                //console.log("No data available for good ");
                 res.status(200).json({ message: "examen no realizada", realizado: false });
             }
         })
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 
@@ -174,10 +174,10 @@ export const uploadExamen = async function(req, res){
         let longitudPregunta = preguntas.length;
         let multiplo = 10 / longitudPregunta;
 
-        console.log('examen: ' + examen)
-        console.log('preguntasNuevas: ' + preguntasNuevas)
+        //console.log('examen: ' + examen)
+        //console.log('preguntasNuevas: ' + preguntasNuevas)
         for(let i=0; i<longitudPregunta; i++){
-            console.log(multiplo);
+            //console.log(multiplo);
             if(preguntasNuevas[i].solucion == -1){
                 nota += 0;
             }else if(preguntas[i].solucion == preguntasNuevas[i].solucion){
@@ -198,7 +198,7 @@ export const uploadExamen = async function(req, res){
         })
         res.status(200).json({ message: "Examen realizado" });
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
@@ -210,8 +210,8 @@ export const uploadComentario = async function(req, res){
         let userid = req.body.iduser;
 
 
-        console.log('examen: ' + examen)
-        console.log('jkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalks');
+        //console.log('examen: ' + examen)
+        //console.log('jkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalksjkabsdkjabslkcfjnaslkdncalks');
         const examenRealizado = ref(db, 'users/' + userid + '/realizado/' + examen);
                 
         update(examenRealizado, {
@@ -219,54 +219,54 @@ export const uploadComentario = async function(req, res){
         })
         res.status(200).json({ message: "Comentario guardado" });
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
 
 export const getExamenesRealizados =  async function(req, res){
     try{
-        console.log('a s d f')
+        //console.log('a s d f')
         let examenid = req.params.idexamen
         
         let usuarios = {}
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'users')).then((snapshot) => {
             if (snapshot.exists()) {
-                console.log(snapshot.val());
+                //console.log(snapshot.val());
                 usuarios = snapshot.val()
                 let estudiantes = []
                 for(var i in usuarios){   
                     if(usuarios[i].realizado != undefined){
                         if(usuarios[i].realizado[examenid] != undefined){
-                            console.log('-----------')
-                            console.log(usuarios[i].realizado[examenid])
+                            //console.log('-----------')
+                            //console.log(usuarios[i].realizado[examenid])
                             estudiantes.push([i, usuarios[i]])
-                            console.log('-----------')   
+                            //console.log('-----------')   
                         }
                     }
                 }
                 for(let i = 0; i < usuarios.length; i++){
-                    console.log('-----')
-                    console.log(i)
-                    console.log('-----')
+                    //console.log('-----')
+                    //console.log(i)
+                    //console.log('-----')
                 }   
                 
                 res.status(200).json({ message: "Devolviendo usuarios que han realizado el examen", usuarios: estudiantes });
             } else {
-                console.log("No data available");
+                //console.log("No data available");
                 res.status(200).json({ message: "No hay usuarios actualmente", });
             }
         })
     }catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
 
 export const getExamenesNoRealizados =  async function(req, res){
     try{
-        console.log('a s d')
+        //console.log('a s d')
         let cursoid = req.params.idcurso
         let examenid = req.params.idexamen
         
@@ -277,14 +277,14 @@ export const getExamenesNoRealizados =  async function(req, res){
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'matricula')).then((snapshot) => {
             if (snapshot.exists()) {
-                console.log(snapshot.val());
+                //console.log(snapshot.val());
                 matriculas = snapshot.val()
                 for(var i in matriculas){   
                     if(matriculas[i].idcurso == cursoid){
-                        console.log('-----------')
-                        console.log(matriculas[i].idcurso)
+                        //console.log('-----------')
+                        //console.log(matriculas[i].idcurso)
                         usuarios.push(matriculas[i].idalumno)
-                        console.log('-----------')   
+                        //console.log('-----------')   
                     }
                 }
             }
@@ -292,7 +292,7 @@ export const getExamenesNoRealizados =  async function(req, res){
         let booleano = false;
         get(child(dbRef, 'users')).then((snapshot) => {
             if (snapshot.exists()) {
-                console.log(snapshot.val());
+                //console.log(snapshot.val());
                 usuarios2 = snapshot.val()
                 
                 for(var i in usuarios2){   
@@ -300,52 +300,52 @@ export const getExamenesNoRealizados =  async function(req, res){
                         booleano = false;
                         
                         if(usuarios[j]==i){
-                            console.log(' ajsnd' + usuarios2[i].realizado);
+                            //console.log(' ajsnd' + usuarios2[i].realizado);
                             if(usuarios2[i].realizado == undefined){
-                                console.log('-----------')
+                                //console.log('-----------')
                                 for(var l in estudiantes){
                                     if(estudiantes[l][0]== i){
                                         booleano = true;
                                     }
                                 }
-                                console.log(booleano);
+                                //console.log(booleano);
                                 if(booleano == false){
                                     estudiantes.push([i, usuarios2[i]])
                                 }
-                                console.log('-----------')   
+                                //console.log('-----------')   
                             }else if(usuarios2[i].realizado[examenid] == '' || usuarios2[i].realizado[examenid] == undefined ){
-                                console.log(examenid);
-                                console.log(usuarios2[i].realizado[examenid])
-                                console.log('-----------')
+                                //console.log(examenid);
+                                //console.log(usuarios2[i].realizado[examenid])
+                                //console.log('-----------')
                                 
                                 for(var l in estudiantes){
                                     if(estudiantes[l][0]== i){
                                         booleano = true;
                                     }
                                 }
-                                console.log(booleano);
+                                //console.log(booleano);
                                 if(booleano == false){
                                     estudiantes.push([i, usuarios2[i]])
                                 }
-                                console.log('-----------')   
+                                //console.log('-----------')   
                             }
                         }
                     }
                 }
                 for(let i = 0; i < usuarios2.length; i++){
-                    console.log('-----')
-                    console.log(i)
-                    console.log('-----')
+                    //console.log('-----')
+                    //console.log(i)
+                    //console.log('-----')
                 }   
                 
                 res.status(200).json({ message: "Devolviendo usuarios que no han realizado el examen", usuarios: estudiantes });
             } else {
-                console.log("No data available");
+                //console.log("No data available");
                 res.status(200).json({ message: "Todos los usuarios han realizado el examen", });
             }
         })
     }catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }

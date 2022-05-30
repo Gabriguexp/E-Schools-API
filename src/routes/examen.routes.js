@@ -15,11 +15,11 @@ router.get('/checkuploadexamen/:userid/:examenid', authMiddleware.verifyToken, e
 
 router.get('/:cursoid/:examenid', authMiddleware.verifyToken, examenController.getExamenById)
 
-router.put('/:examenid', authMiddleware.verifyToken, examenController.updateExamen)
+router.put('/:examenid', authMiddleware.verifyProfesorToken, examenController.updateExamen)
 
 router.post('/uploadExamen', authMiddleware.verifyToken, examenController.uploadExamen)
 
-router.post('/uploadComentario', authMiddleware.verifyToken, examenController.uploadComentario)
+router.post('/uploadComentario', authMiddleware.verifyProfesorToken, examenController.uploadComentario)
 
 
 router.get('/getExamenesNoRealizado/:idcurso/:idexamen', authMiddleware.verifyToken, examenController.getExamenesNoRealizados)

@@ -26,7 +26,7 @@ export const storeCurso = async function(req, res){
         }
     
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 
@@ -39,21 +39,21 @@ export const indexCurso = async function(req, res){
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'curso')).then((snapshot) => {
             if (snapshot.exists()) {
-                //console.log(snapshot.val());
+                ////console.log(snapshot.val());
                 cursos = snapshot.val()
                 for(var i in cursos){                    
                     cursosFormatted.push([i, cursos[i]])
                 }
                 res.status(200).json({ message: "Devolviendo cursos", cursos: cursosFormatted });
             } else {
-                console.log("No data available");
+                //console.log("No data available");
                 res.status(200).json({ message: "No hay cursos disponibles actualmente", });
             }
         })
 
         
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
@@ -64,16 +64,16 @@ export const getCursoById = async function(req, res){
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'curso/'+ id)).then((snapshot) => {
             if (snapshot.exists()) {
-                //console.log(snapshot.val());
+                ////console.log(snapshot.val());
                 let curso = snapshot.val()
                 res.status(200).json({ message: "Devolviendo curso", curso: curso });
             } else {
-                console.log("No data available");
+                //console.log("No data available");
                 res.status(200).json({ message: "No se ha encontrado el curso", });
             }
         })
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
@@ -84,16 +84,16 @@ export const getExamenById = async function(req, res){
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'curso/'+ idcurso +'/examen/'+ id)).then((snapshot) => {
             if (snapshot.exists()) {
-                //console.log(snapshot.val());
+                ////console.log(snapshot.val());
                 let examen = snapshot.val()
                 res.status(200).json({ message: "Devolviendo examen", examen: examen });
             } else {
-                console.log("No data available");
+                //console.log("No data available");
                 res.status(200).json({ message: "No se ha encontrado el examen", id: id});
             }
         })
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
@@ -108,7 +108,7 @@ export const updateCurso = async function(req, res){
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'curso/'+ id)).then((snapshot) => {
             if (snapshot.exists()) {
-                //console.log(snapshot.val());
+                ////console.log(snapshot.val());
                 const curso = ref(db, 'curso/'+id)
                 
                 update(curso, {
@@ -120,7 +120,7 @@ export const updateCurso = async function(req, res){
 
                 res.status(200).json({ message: "curso actualizado", });
             } else {
-                console.log("No data available");
+                //console.log("No data available");
                 res.status(401).json({ message: "No se ha encontrado el curso", });
             }
         })
@@ -129,7 +129,7 @@ export const updateCurso = async function(req, res){
 
         
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
@@ -146,7 +146,7 @@ export const deleteCurso = async function(req, res){
                 res.status(200).json({ message: "Curso borrado.", });
 
             } else {
-                console.log("No data available");
+                //console.log("No data available");
                 res.status(401).json({ message: "No se ha encontrado el curso", });
             }
         })
@@ -155,7 +155,7 @@ export const deleteCurso = async function(req, res){
 
         
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
@@ -167,7 +167,7 @@ export const verifyName = async function(req, res){
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'curso')).then((snapshot) => {
             if (snapshot.exists()) {
-                //console.log(snapshot.val());
+                ////console.log(snapshot.val());
                 cursos = snapshot.val()
                 for(var i in cursos){
                     if(nombre == cursos[i].nombre){
@@ -176,12 +176,12 @@ export const verifyName = async function(req, res){
                 }                
                 return res.status(200).json({ message: "Nombre del curso disponible", disponible: true });
             } else {
-                console.log("No data available");
+                //console.log("No data available");
                 res.status(200).json({ message: "No hay cursos disponibles actualmente", });
             }
         })
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }

@@ -12,9 +12,9 @@ export const storeMaterial = async function(req, res){
         let visible = req.body.visible;
         let curso = req.body.curso;
         let bloque = req.body.bloque
-        console.log('bodys')
-        console.log(req.body)
-        //console.log('Bloque: ' + bloque)
+        //console.log('bodys')
+        //console.log(req.body)
+        ////console.log('Bloque: ' + bloque)
         if (nombre == '' && descripcion == '' && visible == '' && curso == '') {
             res.status(401).json({ message: "Algún campo está vacio" });
         } else {       
@@ -37,10 +37,10 @@ export const storeMaterial = async function(req, res){
                 
                 let file = req.files.file;
                 file.mv('public/public/'+curso +'/' +file.name, true, function(err) {
-                    console.log('moving file')
+                    //console.log('moving file')
                     if (err){
-                        console.log('error subiendo archivo')
-                        console.log(err)
+                        //console.log('error subiendo archivo')
+                        //console.log(err)
                         return res.status(500).send(err);
                     }
 
@@ -71,7 +71,7 @@ export const storeMaterial = async function(req, res){
             }
         }
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 
@@ -84,16 +84,16 @@ export const indexMaterial = async function(req, res){
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'curso/'+ id +'/material')).then((snapshot) => {
             if (snapshot.exists()) {
-                //console.log(snapshot.val());
+                ////console.log(snapshot.val());
                 material = snapshot.val()
                 res.status(200).json({ message: "Devolviendo materiales", materiales: material });
             } else {
-                console.log("No data available");
+                //console.log("No data available");
                 res.status(200).json({ message: "No hay materiales disponibles actualmente para este curso", });
             }
         })
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
@@ -113,12 +113,12 @@ export const getBloques = async function(req, res){
                 }
                 res.status(200).json({ message: "Devolviendo bloques", bloques: bloques });
             } else {
-                console.log("No data available");
+                //console.log("No data available");
                 res.status(200).json({ message: "No hay materiales disponibles actualmente para este curso", });
             }
         })
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
@@ -130,16 +130,16 @@ export const getMaterialById = async function(req, res){
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'curso/'+ cursoid+'/material/'+ materialid)).then((snapshot) => {
             if (snapshot.exists()) {
-                //console.log(snapshot.val());
+                ////console.log(snapshot.val());
                 let material = snapshot.val()
                 res.status(200).json({ message: "Devolviendo material", material: material });
             } else {
-                console.log("No data available");
+                //console.log("No data available");
                 res.status(200).json({ message: "No se ha encontrado el material", });
             }
         })
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
@@ -153,16 +153,16 @@ export const getMaterialByIdFromBloque = async function(req, res){
         const dbRef = ref(getDatabase());
         get(child(dbRef, path)).then((snapshot) => {
             if (snapshot.exists()) {
-                //console.log(snapshot.val());
+                ////console.log(snapshot.val());
                 let material = snapshot.val()
                 res.status(200).json({ message: "Devolviendo material", material: material });
             } else {
-                console.log("No data available");
+                //console.log("No data available");
                 res.status(200).json({ message: "No se ha encontrado el material", });
             }
         })
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
@@ -178,7 +178,7 @@ export const updateMaterial = async function(req, res){
         
         get(child(dbRef, 'curso/'+ idcurso+'/material/'+ materialid)).then((snapshot) => {
             if (snapshot.exists()) {
-                //console.log(snapshot.val());
+                ////console.log(snapshot.val());
                 const material = ref(db, 'curso/'+ idcurso+'/material/'+ materialid)
                 if (descripcion != undefined && descripcion != ''){
                     update(material, {
@@ -194,13 +194,13 @@ export const updateMaterial = async function(req, res){
                 }
                 res.status(200).json({ message: "material actualizado", });
             } else {
-                console.log("No data available");
+                //console.log("No data available");
                 res.status(401).json({ message: "No se ha encontrado el material", });
             }
         })
         
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
@@ -219,8 +219,8 @@ export const updateMaterialFromBloque = async function(req, res){
         get(child(dbRef, 'curso/'+ cursoid+'/material/'+ bloqueid +'/material/'+ materialid)).then((snapshot) => {
             
             if (snapshot.exists()) {
-                console.log('updatematerialfrombloque')    
-                //console.log(snapshot.val());
+                //console.log('updatematerialfrombloque')    
+                ////console.log(snapshot.val());
                 const material = ref(db, 'curso/'+ cursoid+'/material/'+ bloqueid +'/material/'+ materialid)
                 if (descripcion != undefined && descripcion != ''){
                     update(material, {
@@ -238,13 +238,13 @@ export const updateMaterialFromBloque = async function(req, res){
 
                 res.status(200).json({ message: "material actualizado", });
             } else {
-                console.log("No data available");
+                //console.log("No data available");
                 res.status(401).json({ message: "No se ha encontrado el material", });
             }
         })
         
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
@@ -256,38 +256,38 @@ export const deleteMaterial = async function(req, res){
         let cursoid = req.body.curso;
         let materialid = req.body.materialid;
         let bloqueid = req.body.bloqueid;
-        console.log('cursoid'+ cursoid)
+        //console.log('cursoid'+ cursoid)
         let dbpath = 'curso/'+ cursoid+'/material/'+ materialid
         if (bloqueid != undefined && bloqueid != ''){
             dbpath = 'curso/'+ cursoid+'/material/'+ bloqueid +'/material/'+ materialid
         }
-        console.log('dbpath')
-        console.log(dbpath)
+        //console.log('dbpath')
+        //console.log(dbpath)
         const dbRef = ref(getDatabase());
         get(child(dbRef, dbpath)).then((snapshot) => {
             
             if (snapshot.exists()) {
-                console.log('DELETE')
+                //console.log('DELETE')
                 const material = ref(db, dbpath)
                 let materialSnapShot = snapshot.val()
                 if (materialSnapShot.tipo == 'PDF'){
                     let file = snapshot.val().file
                     let path = 'public/public/'+cursoid +'/' +file
                        unlink(path, function(){
-                        console.log('borrado el archivo')
+                        //console.log('borrado el archivo')
                     })
                 }          
                 remove(material)
                 res.status(200).json({ message: "Material borrado.", });
 
             } else {
-                console.log("No data available");
+                //console.log("No data available");
                 res.status(401).json({ message: "No se ha encontrado el material", });
             }
         })
         
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 }
@@ -305,12 +305,12 @@ export const checkUploadedTarea = async function(req, res){
                 let comentario = snapshot.val().comentario
                 res.status(200).json({ message: "Tarea ya subida", entregada: true, nota: nota, comentario: comentario, filename: filename });
             } else {
-                console.log("No data available for good ");
+                //console.log("No data available for good ");
                 res.status(200).json({ message: "Tarea no subida", entregada: false });
             }
         })
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         res.status(400).json({ message: "An error occured" });
     }
 
