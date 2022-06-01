@@ -17,6 +17,10 @@ router.put('/:matriculaid', authMiddleware.verifyAdminToken, matriculaController
 
 router.post('/create-checkout-session', authMiddleware.verifyToken, matriculaController.createCheckoutSession);
 
+router.post('/confirm-payment', authMiddleware.verifyToken, matriculaController.confirmPayment);
+
+router.post('/cancel-payment', authMiddleware.verifyToken, matriculaController.cancelPayment);
+
 /*
 router.delete('/:matriculaid', matriculaController.deleteMatricula)
 */

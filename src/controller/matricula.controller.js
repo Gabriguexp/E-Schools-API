@@ -228,6 +228,20 @@ export const updateMatricula = async function(req, res){
 export const createCheckoutSession = async (req, res) => {
     try{
         let cursoPriceId = req.body.cursopriceid
+        let cursoId = req.body.cursoid
+        let alumnoid = req.body.alumnoid
+        let nombrecurso = req.body.nombrecurso
+        let nombrealumno = req.body.nombrealumno
+        let token = createPaymentToken()
+
+        set(ref(db, 'pago/'+token), {
+            cursoid: cursoId,
+            token: token,
+            alumnoid: alumnoid,
+            nombrecurso: nombrecurso,
+            nombrealumno: nombrealumno,
+          });
+        
         const session = await stripe.checkout.sessions.create({
         line_items: [
             {
@@ -238,18 +252,90 @@ export const createCheckoutSession = async (req, res) => {
             },
         ],
         mode: 'payment',
-        success_url: `http://localhost:8080/#/curso/matriculapagada`,
-        cancel_url: `http://localhost:8080/#/curso/pagocancelado`,
+        success_url: 'http://localhost:8080/#/curso/matriculapagada/' + token,
+        cancel_url: 'http://localhost:8080/#/curso/pagocancelado/' + token,
         });
         //console.log('session url')
         //console.log(session.url)
         //console.log('creando pago')
         res.status(200).json({ message: "Redirigiendo", url: session.url });
     } catch (error) {
-        //console.log(error);
+        console.log(error);
         res.status(500).json({ message: "An error occured" });
     }
 }
+
+function createPaymentToken(){
+    let s = ""
+    let cad = "qwertyuiopñlkjhgfdsazxcvbnmQWERTYUIOPÑLKJHGFDSAZXCVBNM1234567890"
+    for(let i = 0; i < 20; i++){
+      let ind = Math.floor(Math.random() * 64);
+      s+= cad.charAt(ind)
+    }
+    return s
+  }
+
+export const confirmPayment = async function(req, res) {
+    try{
+        let id = req.body.paymenttoken;
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'pago/'+ id)).then((snapshot) => {
+            if (snapshot.exists()) {
+
+                const matricula = ref(db, 'matricula')
+                const newMatricula = push(matricula)
+                console.log('snapshot')
+                console.log(snapshot.val())
+                set(newMatricula, {
+                    idalumno : snapshot.val().alumnoid, //idAlumno, 
+                    idcurso: snapshot.val().cursoid , //idCurso,
+                    activa: true,
+                    fechainicio: new Date().toLocaleString(),
+                    fechafin: '26/05/2030',
+                    nombreAlumno: snapshot.val().nombrealumno, //nombreAlumno,
+                    nombreCurso: snapshot.val().nombrecurso, //nombreCurso
+                })
+                
+                const pago = ref(db, 'pago/'+id)
+                remove(pago)
+            res.status(200).json({ message: "matricula añadida" });
+            } else {
+                //console.log("No data available");
+                res.status(401).json({ message: "No se ha encontrado el token de pago.", });
+            }
+        })
+    } catch (error) {
+        //console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+}
+
+export const cancelPayment = async function(req, res) {
+    try{
+        let id = req.body.paymentid;
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, 'pago/'+ id)).then((snapshot) => {
+            if (snapshot.exists()) {
+
+                const pago = ref(db, 'pago/'+id)
+                remove(pago)
+                res.status(200).json({ message: "Pago cancelado.", });
+
+            } else {
+                //console.log("No data available");
+                res.status(401).json({ message: "No se ha encontrado el pago", });
+            }
+        })
+    } catch (error) {
+        //console.log(error);
+        res.status(400).json({ message: "An error occured" });
+    }
+}
+
+
+
+
+
 
 
 export const deleteMatricula = async function(req, res){
