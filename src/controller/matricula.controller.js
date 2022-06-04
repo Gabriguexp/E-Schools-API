@@ -281,11 +281,8 @@ export const confirmPayment = async function(req, res) {
         const dbRef = ref(getDatabase());
         get(child(dbRef, 'pago/'+ id)).then((snapshot) => {
             if (snapshot.exists()) {
-
                 const matricula = ref(db, 'matricula')
                 const newMatricula = push(matricula)
-                console.log('snapshot')
-                console.log(snapshot.val())
                 set(newMatricula, {
                     idalumno : snapshot.val().alumnoid, //idAlumno, 
                     idcurso: snapshot.val().cursoid , //idCurso,
@@ -295,7 +292,6 @@ export const confirmPayment = async function(req, res) {
                     nombreAlumno: snapshot.val().nombrealumno, //nombreAlumno,
                     nombreCurso: snapshot.val().nombrecurso, //nombreCurso
                 })
-                
                 const pago = ref(db, 'pago/'+id)
                 remove(pago)
             res.status(200).json({ message: "matricula añadida" });
